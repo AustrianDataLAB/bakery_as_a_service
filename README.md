@@ -25,6 +25,34 @@ The system should be able to generate documents such as invoices that are direct
 
 Overnight bakers night need to prepare the ordered goods which are then shipped to the respective customers. To facilitate this process, a software could be used to automatically generate optimal routes for the delivery team. There are various factors and other constraints that can be added to the model (e.g. number of cars, size of cars, time constraint for guaranteed delivery, etc.)
 
+## Milestones
+
+### Milestone 1 - Planning & Setup (until 7. April)
+* Requirements gathering
+* Architectural design
+  * Interface & Service modeling
+* Cloud/network setup
+* CI/CD pipelines
+* Role definition + Work Packages
+
+### Milestone 2 - Development (10.06.2024)
+* Authentication & Authorization
+  * user management (customers, admins, baker and employee)
+* Document generation + email service
+* UI/UX + Frontend development
+* Backend development (automated planning, product management)
+* Database modeling
+
+### Milestone 3 - Project presentation (21.06.2024)
+* Prepare for final presentation
+  * Slides
+  * Demo
+
+
+## Architecture Overview
+
+todo add png
+
 ## Value proposition
 
 For details please refer to: https://docs.google.com/document/d/1pH0qjtOCmJ9wbqzUIkqdiRtdwsFonX-IpqglRnEzz4I/edit?usp=sharing
