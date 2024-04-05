@@ -53,7 +53,6 @@ Overnight bakers night need to prepare the ordered goods which are then shipped 
 
 ![image](https://github.com/AustrianDataLAB/bakery_as_a_service/assets/75341604/643fcc98-2de8-4199-a95d-cbb5b32ac6d9)
 
-
 ## Value proposition
 
 For details please refer to: https://docs.google.com/document/d/1pH0qjtOCmJ9wbqzUIkqdiRtdwsFonX-IpqglRnEzz4I/edit?usp=sharing
