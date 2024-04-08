@@ -1,4 +1,4 @@
-# BAAS - Backery as a service
+# BAAS - Bakery as a service
 
 Bakeries need to provide and make use of multiple services in
 order to run smoothly. I sat done with a medium sized bakery in my
