@@ -14,6 +14,8 @@ WORKDIR /opt/app
 COPY . .
 RUN chown -R node:node /opt/app
 USER node
+# yarn strapi ts:generate-types
+RUN ["yarn", "strapi", "ts:generate-types"]
 RUN ["npm", "run", "build"]
 EXPOSE 1337
 CMD ["npm", "run", "develop"]
