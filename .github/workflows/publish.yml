@@ -10,7 +10,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: baas_backend
+  REPOSITORY_NAME: austriandatalab
+  IMAGE_NAME: baas-backend
 
 jobs:
   backend-build-and-push:
@@ -45,6 +46,9 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4
+  
       - name: Build and conditionally push image to ghcr.io
         uses: docker/build-push-action@v5
         with:
@@ -54,4 +58,6 @@ jobs:
           # Push only on v* tags
           push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: |
-            ${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME }}:${{ env.GITHUB_REF_NAME }}
+
