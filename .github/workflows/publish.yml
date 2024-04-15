@@ -10,7 +10,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: baas_backend
+  REPO_NAME: bakery_as_a_service
+  IMAGE_NAME: backend
 
 jobs:
   build-and-push-image:
@@ -53,4 +54,5 @@ jobs:
             FOO=bar
           # Push only on v* tags
           push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: |
+            ${{ env.REGISTRY }}/${{REPO_NAME}}/${{ env.IMAGE_NAME }}:latest
