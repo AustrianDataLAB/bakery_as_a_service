@@ -62,5 +62,4 @@ jobs:
           # Push only on v* tags
           push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: ${{ steps.meta.outputs.tags }}
-          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
