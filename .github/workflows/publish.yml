@@ -1,9 +1,4 @@
 name: Build and push the image
-on: [pull_request]
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: baas_backend
-
 
 jobs:
   build-and-push-image:
@@ -38,19 +33,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
-            type=match,pattern=\d.\d.\d.*
-            type=sha
-
-      - name: Push image to github container registry
+      - name: Build and push image to github container registry
         uses: docker/build-push-action@v5
         with:
           context: baas-strapi-docker
