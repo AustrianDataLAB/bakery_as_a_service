@@ -10,11 +10,10 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  REPO_NAME: bakery_as_a_service
-  IMAGE_NAME: backend
+  IMAGE_NAME: baas_backend
 
 jobs:
-  build-and-push-image:
+  backend-build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -55,4 +54,4 @@ jobs:
           # Push only on v* tags
           push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: |
-            ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest
+            ${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
