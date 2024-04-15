@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main 
+    tags:
+      - 'v*'
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: baas_backend
@@ -18,6 +20,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
 
       - name: Login to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -38,28 +54,10 @@ jobs:
             type=match,pattern=\d.\d.\d.*
             type=sha
 
-      - name: Build an image from Dockerfile
-        run: |
-          cd baas-strapi-docker
-          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} -f Dockerfile .
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+      - name: Push image to github container registry
+        uses: docker/build-push-action@v5
         with:
-          scan-type: config
-          hide-progress: true
-          output: trivy.txt
-
-      - name: Publish Trivy Output to Summary
-        run: |
-          if [[ -s trivy.txt ]]; then
-            {
-              echo "### Security Output"
-              echo "<details><summary>Click to expand</summary>"
-              echo ""
-              echo '```terraform'
-              cat trivy.txt
-              echo '```'
-              echo "</details>"
-            } >> $GITHUB_STEP_SUMMARY
-          fi 
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
