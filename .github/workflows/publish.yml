@@ -44,11 +44,23 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            type=match,pattern=\d.\d.\d.*
+            type=sha
+
       - name: Build and conditionally push image to ghcr.io
         uses: docker/build-push-action@v5
         with:
           context: baas-strapi-docker
           # Push only on v* tags
           push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+          tags: ${{ steps.meta.outputs.tags }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
