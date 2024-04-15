@@ -1,10 +1,5 @@
 name: Build and push the image
-on:
-  push:
-    branches:
-      - main 
-    tags:
-      - 'v*'
+on: [pull_request]
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: baas_backend
