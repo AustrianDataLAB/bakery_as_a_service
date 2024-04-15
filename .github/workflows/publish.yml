@@ -1,5 +1,13 @@
 name: Build and push the image
 
+on:
+  pull_request:
+  push:
+    branches:
+      - main 
+    tags:
+      - 'v*'
+
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -37,6 +45,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: baas-strapi-docker
-          push: ${{ github.event_name != 'pull_request' }}
+          # Push only on v* tags
+          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
