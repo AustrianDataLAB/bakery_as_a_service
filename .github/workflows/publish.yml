@@ -53,6 +53,4 @@ jobs:
             FOO=bar
           # Push only on v* tags
           push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
-          tags:
-            - ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            - ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
