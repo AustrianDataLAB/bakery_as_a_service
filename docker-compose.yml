@@ -1,5 +1,19 @@
 version: "3"
 services:
+  frontend:
+    container_name: frontend
+    build: 
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    image: baas_frontend
+    restart: unless-stopped
+    ports: 
+      - "4200:80"
+    networks:
+      - strapi
+    depends_on:
+      - strapi
+
   strapi:
     container_name: strapi
     build:
