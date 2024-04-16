@@ -56,3 +56,7 @@ Overnight bakers night need to prepare the ordered goods which are then shipped 
 ## Value proposition
 
 For details please refer to: https://docs.google.com/document/d/1pH0qjtOCmJ9wbqzUIkqdiRtdwsFonX-IpqglRnEzz4I/edit?usp=sharing
+
+# Local Developer Setup
+
+* `make`

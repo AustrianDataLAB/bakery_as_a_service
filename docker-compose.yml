@@ -1,7 +1,7 @@
 version: "3"
 services:
-  strapi:
-    container_name: strapi
+  backend-strapi:
+    container_name: backend-strapi
     build:
       context: ./baas-strapi-docker
       dockerfile: ./Dockerfile
@@ -31,10 +31,10 @@ services:
     networks:
       - strapi
     depends_on:
-      - strapiDB
+      - backend-db
 
-  strapiDB:
-    container_name: strapiDB
+  backend-db:
+    container_name: backend-db
     platform: linux/amd64 # for platform error on Apple M1 chips
     restart: unless-stopped
     env_file: .env
@@ -44,14 +44,20 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
     volumes:
-      - strapi-data:/var/lib/postgresql/data/ # using a volume
+      - backend-db-volume:/var/lib/postgresql/data/ # using a volume
     ports:
       - "5432:5432"
     networks:
       - strapi
 
+  backend-test:
+    build:
+      context: ./baas-strapi-docker
+      dockerfile: Dockerfile.test
+    command: ["npm", "test"]
+
 volumes:
-  strapi-data:
+  backend-db-volume:
 
 networks:
   strapi:
