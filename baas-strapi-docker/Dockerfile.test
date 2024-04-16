@@ -1,7 +1,8 @@
-FROM node:20-alpine AS tester
+FROM node:18-alpine AS tester
 COPY . .
+COPY .env_test .env
 
-RUN ["npm", "run", "install"]
-RUN ["yarn", "strapi", "ts:generate-types"]
+RUN ["npm", "install"]
+RUN ["npm", "run", "strapi", "ts:generate-types"]
 RUN ["npm", "run", "build"]
-CMD ["yarn", "test"]
+CMD ["npm", "test"]
