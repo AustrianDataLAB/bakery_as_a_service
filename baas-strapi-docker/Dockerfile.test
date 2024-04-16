@@ -1,0 +1,7 @@
+FROM node:20-alpine AS tester
+COPY . .
+
+RUN ["npm", "run", "install"]
+RUN ["yarn", "strapi", "ts:generate-types"]
+RUN ["npm", "run", "build"]
+CMD ["yarn", "test"]
