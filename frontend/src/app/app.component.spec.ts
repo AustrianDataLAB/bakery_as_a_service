@@ -26,8 +26,4 @@ describe('AppComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('Hello, frontend');
   });
-
-  it('should always fail', () => {
-    expect(false).toEqual(true);
-  });
 });
