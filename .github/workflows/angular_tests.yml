@@ -9,10 +9,5 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Build frontend
-        run: |
-          yarn --cwd frontend install
-          yarn --cwd frontend build
-
-      - name: Run Angular tests
+      - name: Run angular tests
         run: docker compose run frontend-test
