@@ -14,6 +14,12 @@ services:
     depends_on:
       - strapi
 
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.test
+    command: ["npm", "run", "test-ci"]
+
   strapi:
     container_name: strapi
     build:

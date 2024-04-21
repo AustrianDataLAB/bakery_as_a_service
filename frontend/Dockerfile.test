@@ -1,0 +1,9 @@
+FROM node:18-alpine as tester
+RUN apk add chromium
+ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV NG_CLI_ANALYTICS="false"
+
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm run test-ci
