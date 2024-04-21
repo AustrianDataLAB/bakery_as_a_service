@@ -27,7 +27,6 @@ services:
       dockerfile: ./Dockerfile
     image: baas_strapi
     restart: unless-stopped
-    env_file: .env
     environment:
       DATABASE_CLIENT: ${DATABASE_CLIENT}
       DATABASE_HOST: ${DATABASE_HOST}
@@ -57,7 +56,6 @@ services:
     container_name: strapiDB
     platform: linux/amd64 # for platform error on Apple M1 chips
     restart: unless-stopped
-    env_file: .env
     image: postgres:16.2-alpine3.19
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
