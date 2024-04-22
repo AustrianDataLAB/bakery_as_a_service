@@ -1,15 +1,20 @@
 name: Build and push the image
+
 on:
+  pull_request:
   push:
     branches:
       - main 
+    tags:
+      - 'v*'
+
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: baas_backend
-
+  REPOSITORY_NAME: austriandatalab
+  IMAGE_NAME: baas-backend
 
 jobs:
-  build-and-push-image:
+  backend-build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,40 +31,36 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4
+  
+      - name: Build and conditionally push image to ghcr.io
+        uses: docker/build-push-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          context: baas-strapi-docker
+          build-args: |
+            FOO=bar
+          # Push only on v* tags
+          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: |
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
-            type=match,pattern=\d.\d.\d.*
-            type=sha
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME }}:${{ env.GITHUB_REF_NAME }}
 
-      - name: Build an image from Dockerfile
-        run: |
-          cd baas-strapi-docker
-          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} -f Dockerfile .
-
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true
         with:
-          scan-type: config
-          hide-progress: true
-          output: trivy.txt
+          image-ref: '${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}'
+          ignore-unfixed: true
+          exit-code: '1'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL'
 
-      - name: Publish Trivy Output to Summary
-        run: |
-          if [[ -s trivy.txt ]]; then
-            {
-              echo "### Security Output"
-              echo "<details><summary>Click to expand</summary>"
-              echo ""
-              echo '```terraform'
-              cat trivy.txt
-              echo '```'
-              echo "</details>"
-            } >> $GITHUB_STEP_SUMMARY
-          fi 
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
+        with:
+          sarif_file: 'trivy-results.sarif'
+
