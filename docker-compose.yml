@@ -18,7 +18,6 @@ services:
     build:
       context: ./frontend
       dockerfile: ./Dockerfile.test
-    command: ["npm", "run", "test-ci"]
 
   strapi:
     container_name: strapi

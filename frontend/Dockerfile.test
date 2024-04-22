@@ -6,4 +6,4 @@ ENV NG_CLI_ANALYTICS="false"
 WORKDIR /app
 COPY . .
 RUN npm install
-RUN npm run test-ci
+CMD ["npm", "run", "test-ci"]
