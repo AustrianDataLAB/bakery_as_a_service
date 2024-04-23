@@ -4,7 +4,6 @@ services:
     container_name: frontend
     build: 
       context: ./frontend
-      dockerfile: ./Dockerfile
     image: baas_frontend
     ports: 
       - "4200:80"
@@ -28,7 +27,8 @@ services:
 
   backend:
     container_name: backend
-    image: directus/directus:10.10.5
+    build:
+      context: ./backend
     ports:
       - 8055:8055
     volumes:
