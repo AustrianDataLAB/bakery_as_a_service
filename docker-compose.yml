@@ -17,13 +17,13 @@ services:
       backend:
         condition: service_healthy  
 
-  #frontend-test:
-  #  build:
-  #    context: ./frontend
-  #    dockerfile: ./Dockerfile.test
-  #  depends_on:
-  #    frontend:
-  #      condition: service_healthy
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.test
+    depends_on:
+      frontend:
+        condition: service_healthy
 
   backend:
     container_name: backend
