@@ -37,7 +37,7 @@ jobs:
       - name: Build and conditionally push image to ghcr.io
         uses: docker/build-push-action@v5
         with:
-          context: baas-strapi-docker
+          context: backend
           build-args: |
             FOO=bar
           # Push only on v* tags

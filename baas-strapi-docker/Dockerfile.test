@@ -1,8 +1,0 @@
-FROM node:18-alpine AS tester
-COPY . .
-COPY .env_test .env
-
-RUN ["npm", "install"]
-RUN ["npm", "run", "strapi", "ts:generate-types"]
-RUN ["npm", "run", "build"]
-CMD ["npm", "test"]

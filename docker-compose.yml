@@ -1,50 +1,83 @@
 version: "3"
 services:
-  backend-strapi:
-    container_name: backend-strapi
-    build:
-      context: ./baas-strapi-docker
-      dockerfile: ./Dockerfile
-    image: baas_strapi
-    restart: unless-stopped
-    env_file: .env
-    volumes:
-      - ./baas-strapi-docker/config:/opt/app/config
-      - ./baas-strapi-docker/src:/opt/app/src
-      - ./baas-strapi-docker/package.json:/opt/package.json
-      - ./baas-strapi-docker/package.json.lock:/opt/yarn.lock
-      - ./baas-strapi-docker/.env:/opt/app/.env
-      - ./baas-strapi-docker/public/uploads:/opt/app/public/uploads
-    ports:
-      - "1337:1337"
-    networks:
-      - strapi
+  frontend:
+    container_name: frontend
+    build: 
+      context: ./frontend
+    image: baas_frontend
+    ports: 
+      - 4200:80
+    healthcheck:
+      test: wget localhost:80 --no-verbose --tries=1 --spider || exit 1
+      interval: 5s
+      retries: 10
+      start_period: 10s
+      timeout: 5s
     depends_on:
-      - backend-db
+      backend:
+        condition: service_healthy  
+
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.test
+    depends_on:
+      frontend:
+        condition: service_healthy
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+    ports:
+      - 8055:8055
+    volumes:
+      - ./volume/backend/uploads/:/directus/uploads/
+      - ./volume/backend/extensions/:/directus/extensions/
+    environment:
+      KEY: "replace-with-random-value"
+      SECRET: "replace-with-random-value"
+      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASSWORD: "admin"
+      DB_CLIENT: "pg"
+      DB_HOST: "backend-db"
+      DB_PORT: 5432
+      DB_DATABASE: "directus"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      WEBSOCKETS_ENABLED: "true"
+    healthcheck:
+      test: wget localhost:8055/admin --no-verbose --tries=1 --spider || exit 1
+      interval: 5s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+    depends_on:
+      backend-db:
+        condition: service_healthy
+
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ["npm", "test"]
+    depends_on:
+      backend:
+        condition: service_healthy
 
   backend-db:
     container_name: backend-db
     platform: linux/amd64 # for platform error on Apple M1 chips
-    restart: unless-stopped
-    env_file: .env
     image: postgres:16.2-alpine3.19
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "directus"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
     volumes:
-      - backend-db-volume:/var/lib/postgresql/data/ # using a volume
-    ports:
-      - "5432:5432"
-    networks:
-      - strapi
+      - ./volume/backend-db:/var/lib/postgresql/data/
 
-  backend-test:
-    build:
-      context: ./baas-strapi-docker
-      dockerfile: Dockerfile.test
-    command: ["npm", "test"]
-
-volumes:
-  backend-db-volume:
-
-networks:
-  strapi:
-    name: Strapi
-    driver: bridge

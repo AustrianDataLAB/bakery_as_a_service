@@ -5,6 +5,11 @@ order to run smoothly. I sat done with a medium sized bakery in my
 town in order to identify some requirements for such an
 application including web shop + planning software for goods and delivery.
 
+## Local Development Setup
+
+* `make up`
+* Open `http://localhost:8055/` locally and login with `admin@example.com` + `admin`
+
 ## Components Overview
 
 Our application will consist of four main components: the customer app, the management interface, the document service and the planning service.
