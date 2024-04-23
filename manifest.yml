@@ -1,0 +1,177 @@
+
+---
+# Volume for postgres
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: baas-backend-db
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+
+---
+
+# Directus deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baas-backend
+spec:
+  progressDeadlineSeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      servicename: baas-backend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        servicename: baas-backend
+    spec:
+      containers:
+      - env:
+        - name: KEY
+          value: "replace-with-random-value"
+        - name: SECRET
+          value: "replace-with-random-value"
+        - name: ADMIN_EMAIL
+          value: "admin@example.com"
+        - name: ADMIN_PASSWORD
+          value: "admin"
+        - name: DB_CLIENT
+          value: "pg"
+        - name: DB_HOST
+          value: "backend-db"
+        - name: DB_PORT
+          value: 5432
+        - name: DB_DATABASE
+          value: "directus"
+        - name: DB_USER
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "postgres"
+        - name: WEBSOCKETS_ENABLED
+          value: "true"
+        name: baas-backend
+        image: directus/directus:10.10.5
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - "wget localhost:8055/admin --no-verbose --tries=1 --spider"
+          failureThreshold: 3
+          initialDelaySeconds: 3
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 512Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        #volumeMounts:
+        #- mountPath: /pv
+        #  name: baas-backend
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      #volumes:
+      #- name: baas-backend
+      #  persistentVolumeClaim:
+      #    claimName: baas-backend
+
+# Postgres deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baas-backend-db
+spec:
+  progressDeadlineSeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      servicename: baas-backend-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        servicename: baas-backend-db
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "postgres"
+        - name: POSTGRES_DB
+          value: "directus"
+        name: baas-backend
+        image: postgres:16.2-alpine3.19
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+          failureThreshold: 3
+          initialDelaySeconds: 3
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 1G
+          requests:
+            cpu: 50m
+            memory: 1G
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data/
+          name: baas-backend-db
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: baas-backend-db
+        persistentVolumeClaim:
+          claimName: baas-backend-db
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-baas-backend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8055 # exposed port reachable by other pods
+    targetPort: 8055 # port inside container 
+    protocol: TCP
+    name: http
+  selector:
+    servicename: baas-backend # Select member-pods of this service
+
+# ---
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: ingress-baas-backend
+#   annotations:
+#     nginx.ingress.kubernetes.io/proxy-body-size: "30m"
+# spec:
+#   rules:
+#   - host: {instance_fulldomain}
+#     http:
+#       paths:
+#       - backend:
+#           serviceName: service-baas-backend
+#           servicePort: 8080
+#   tls:
+#   - secretName: {instance_domainsecret}
+
+
