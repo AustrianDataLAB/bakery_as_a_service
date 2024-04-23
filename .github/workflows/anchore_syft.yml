@@ -27,10 +27,10 @@ jobs:
     - name: Checkout the code
       uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build ./baas-strapi-docker --tag localbuild/testimage:latest
+      run: docker build ./backend --tag localbuild/backend:latest
     - name: Scan the image and upload dependency results
       uses: anchore/sbom-action@bb716408e75840bbb01e839347cd213767269d4a
       with:
-        image: "localbuild/testimage:latest"
+        image: "localbuild/backend:latest"
         artifact-name: image.spdx.json
         dependency-snapshot: true
