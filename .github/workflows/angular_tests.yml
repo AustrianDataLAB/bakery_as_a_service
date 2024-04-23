@@ -10,4 +10,4 @@ jobs:
           node-version: '20'
 
       - name: Run angular tests
-        run: docker compose --env-file=.env.test run frontend-test
+        run: docker compose run frontend-test
