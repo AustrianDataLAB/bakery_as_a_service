@@ -6,7 +6,7 @@ services:
       context: ./frontend
     image: baas_frontend
     ports: 
-      - "4200:80"
+      - 4200:80
     healthcheck:
       test: wget localhost:80 --no-verbose --tries=1 --spider || exit 1
       interval: 5s
@@ -46,8 +46,6 @@ services:
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
       WEBSOCKETS_ENABLED: "true"
-    ports:
-      - "8055:8055"
     healthcheck:
       test: wget localhost:8055/admin --no-verbose --tries=1 --spider || exit 1
       interval: 5s
