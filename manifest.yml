@@ -158,6 +158,32 @@ spec:
     servicename: baas-backend # Select member-pods of this service
 
 ---
+# Ingress + TLS (with letsencrypt auto cert creation) to expose the Directus Admin UI
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
+  name: baas-admin-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: baas-admin.caas-0024.dev.austrianopencloudcommunity.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: service-baas-backend
+                port:
+                  number: 8055
+            path: /
+            pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - baas-admin.caas-0024.dev.austrianopencloudcommunity.org
+      secretName: tls-baas-admin-ingress
+
+---
 apiVersion: v1
 kind: Service
 metadata:
