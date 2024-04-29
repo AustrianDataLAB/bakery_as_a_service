@@ -45,9 +45,9 @@ spec:
         - name: DB_CLIENT
           value: "pg"
         - name: DB_HOST
-          value: "backend-db"
+          value: "service-baas-backend-db"
         - name: DB_PORT
-          value: 5432
+          value: "5432"
         - name: DB_DATABASE
           value: "directus"
         - name: DB_USER
@@ -73,7 +73,7 @@ spec:
             cpu: "500m"
             memory: 512Mi
           requests:
-            cpu: 50m
+            cpu: "50m"
             memory: 64Mi
         #volumeMounts:
         #- mountPath: /pv
@@ -85,6 +85,7 @@ spec:
       #  persistentVolumeClaim:
       #    claimName: baas-backend
 
+---
 # Postgres deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -131,7 +132,7 @@ spec:
             cpu: 50m
             memory: 1G
         volumeMounts:
-        - mountPath: /var/lib/postgresql/data/
+        - mountPath: /var/lib/postgresql/
           name: baas-backend-db
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
@@ -155,6 +156,21 @@ spec:
     name: http
   selector:
     servicename: baas-backend # Select member-pods of this service
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-baas-backend-db
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432 # exposed port reachable by other pods
+    targetPort: 5432 # port inside container 
+    protocol: TCP
+    name: db-port
+  selector:
+    servicename: baas-backend-db # Select member-pods of this service
 
 # ---
 # apiVersion: extensions/v1beta1
