@@ -118,7 +118,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - pg_isready
+              - "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"
           failureThreshold: 3
           initialDelaySeconds: 3
           periodSeconds: 15
