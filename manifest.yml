@@ -62,12 +62,12 @@ spec:
         livenessProbe:
           failureThreshold: 3
           httpGet:
-            path: /admin
+            path: /server/health
             port: 8055
             scheme: HTTP
           failureThreshold: 3
-          initialDelaySeconds: 3
-          periodSeconds: 15
+          initialDelaySeconds: 10
+          periodSeconds: 5
           successThreshold: 1
           timeoutSeconds: 5
         resources:
@@ -114,6 +114,8 @@ spec:
           value: "postgres"
         - name: POSTGRES_DB
           value: "directus"
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/pgdata"
         name: baas-backend
         image: postgres:16.2
         imagePullPolicy: IfNotPresent
