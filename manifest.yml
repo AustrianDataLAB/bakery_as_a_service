@@ -113,7 +113,7 @@ spec:
         - name: POSTGRES_DB
           value: "directus"
         name: baas-backend
-        image: postgres:16.2-alpine3.19
+        image: postgres:16.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
@@ -129,7 +129,7 @@ spec:
             cpu: "500m"
             memory: 1G
           requests:
-            cpu: 50m
+            cpu: "50m"
             memory: 1G
         volumeMounts:
         - mountPath: /var/lib/postgresql/
@@ -140,7 +140,6 @@ spec:
       - name: baas-backend-db
         persistentVolumeClaim:
           claimName: baas-backend-db
-
 
 ---
 apiVersion: v1
