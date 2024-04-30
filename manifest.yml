@@ -60,9 +60,11 @@ spec:
         image: directus/directus:10.10.5
         imagePullPolicy: IfNotPresent
         livenessProbe:
-          exec:
-            command:
-            - "wget localhost:8055/admin --no-verbose --tries=1 --spider"
+          failureThreshold: 3
+          httpGet:
+            path: /admin
+            port: 8055
+            scheme: HTTP
           failureThreshold: 3
           initialDelaySeconds: 3
           periodSeconds: 15
