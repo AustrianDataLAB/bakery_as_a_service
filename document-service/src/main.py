@@ -1,15 +1,33 @@
-from typing import Union, Annotated
-import tempfile
+from typing import Annotated, Any
 from os import path
-import subprocess
 import shutil
+from functools import cache
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel
 
+from docservice import generation
+
 TYPST = 'typst'
 TEMPLATE = path.abspath(path.join(path.dirname(__file__), 'template'))
+
+
+@cache
+def get_template():
+    template_path = path.join(TEMPLATE, 'document_list.typ')
+    with open(template_path, 'r') as fd:
+        return fd.read()
+
+
+class DocumentList(BaseModel):
+    title: str
+    tag: str
+    numbered: bool = True
+    lines: bool = True
+    header: list[str]
+    data: list[list[Any]]
+
 
 app = FastAPI()
 
@@ -19,19 +37,20 @@ def read_root():
 
 @app.get("/example")
 def get_example():
-    return FileResponse(path.join(TEMPLATE, 'students.csv'))
+    return FileResponse(path.join(TEMPLATE, 'backliste.json'))
 
 @app.post("/")
-def generate_doc(file: Annotated[bytes, File()]):
-    with tempfile.TemporaryDirectory(prefix='doc_service_') as tmpdir:
-        print(tmpdir)
-        with open(path.join(tmpdir, 'students.csv'), 'wb') as fd:
-            fd.write(file)
-        shutil.copy(path.join(TEMPLATE, 'students.typ'), tmpdir)
-        sub = subprocess.run([TYPST, 'compile', 'students.typ'], cwd=tmpdir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        print(sub.returncode)
-        print(sub.stdout)
-        print(sub.stderr)
-        with open(path.join(tmpdir, 'students.pdf'), 'rb') as fd:
-            pdf = fd.read()
-        return Response(content=pdf, media_type='application/pdf')
+def generate_doc(file: DocumentList):
+
+    header_len = len(file.header)
+    for e in file.data:
+        if len(e) != header_len:
+            raise HTTPException(status_code=400, detail="The length of the header must be equal to the length of all rows")
+
+    try:
+        pdf = generation.generate_document(get_template(), {'data.json': file.model_dump_json()})
+    except generation.GenerationException as e:
+        raise HTTPException(status_code=500, detail=e.reason)
+
+    return Response(content=pdf, media_type='application/pdf')
+
