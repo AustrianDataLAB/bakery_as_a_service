@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.postgres.name }}
+spec:
+  progressDeadlineSeconds: 60
+  replicas: {{ .Values.postgres.replicas }}
+  selector:
+    matchLabels:
+      servicename: {{ .Values.postgres.name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        servicename: {{ .Values.postgres.name }}
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_USER
+          value: "{{ .Values.postgres.user.name }}"
+        - name: POSTGRES_PASSWORD
+          value: "{{ .Values.postgres.user.password }}"
+        - name: POSTGRES_DB
+          value: "{{ .Values.postgres.database }}"
+        - name: PGDATA
+          value: "{{ .Values.postgres.data }}"
+        name: baas-backend
+        image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+        imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
+        livenessProbe:
+          exec:
+            command:
+              - "{{ .Values.postgres.liveness.command }}"
+          failureThreshold: 3
+          initialDelaySeconds: 3
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "{{ .Values.postgres.resources.limits.cpu }}"
+            memory: {{ .Values.postgres.resources.limits.memory }}
+          requests:
+            cpu: "{{ .Values.postgres.resources.requests.cpu }}"
+            memory: {{ .Values.postgres.resources.requests.memory }}
+        volumeMounts:
+        {{- range .Values.postgres.volumes }}
+        - mountPath: {{ .mount }}
+          name: {{ .name }}
+        {{- end }}
+      restartPolicy: {{ .Values.postgres.restartPolicy }}
+      terminationGracePeriodSeconds: {{ .Values.postgres.terminationGracePeriodSeconds }}
+      volumes:
+      {{- range .Values.postgres.volumes }}
+      - name: {{ .name }}
+        persistentVolumeClaim:
+          claimName: {{ .claim}}
+      {{- end }}

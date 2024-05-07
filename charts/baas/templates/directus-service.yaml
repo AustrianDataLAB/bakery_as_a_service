@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.directus.service.name }}
+spec:
+  type: {{ .Values.directus.service.type }}
+  ports:
+    - port: {{ .Values.directus.service.port }} # exposed port reachable by other pods
+      targetPort: {{ .Values.directus.service.port }} # port inside container
+      protocol: TCP
+      name: http
+  selector:
+    servicename: {{ .Values.directus.name }} # Select member-pods of this service

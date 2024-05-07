@@ -1,0 +1,13 @@
+# Volume for postgres
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.postgres.name }}
+spec:
+  accessModes:
+  {{- range .Values.postgres.accessModes }}
+  - {{ . }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.postgres.storage }}
