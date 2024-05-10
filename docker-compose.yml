@@ -19,6 +19,23 @@ services:
     networks:
       - baas_network
 
+  document:
+    container_name: document-service
+    build:
+      context: ./document-service
+    image: document-service
+    ports:
+      - 8123:80
+    healthcheck:
+      test: wget localhost:80 --no-verbose --tries=1 --spider || exit 1
+      interval: 5s
+      retries: 10
+      start_period: 10s
+      timeout: 5s
+    depends_on:
+      backend:
+        condition: service_healthy
+
   frontend-test:
     build:
       context: ./frontend
