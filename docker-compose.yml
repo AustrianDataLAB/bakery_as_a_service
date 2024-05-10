@@ -16,6 +16,8 @@ services:
     depends_on:
       backend:
         condition: service_healthy  
+    networks:
+      - baas_network
 
   frontend-test:
     build:
@@ -24,6 +26,8 @@ services:
     depends_on:
       frontend:
         condition: service_healthy
+    networks:
+      - baas_network
 
   backend:
     container_name: backend
@@ -55,6 +59,8 @@ services:
     depends_on:
       backend-db:
         condition: service_healthy
+    networks:
+      - baas_network
 
   backend-db:
     container_name: backend-db
@@ -71,4 +77,8 @@ services:
       retries: 10
     volumes:
       - ./volume/backend-db:/var/lib/postgresql/data/
+    networks:
+      - baas_network
 
+networks:
+  baas_network:

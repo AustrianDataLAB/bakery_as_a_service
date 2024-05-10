@@ -4,14 +4,16 @@ on:
   pull_request:
   push:
     branches:
-      - main 
+      - main
+      - 22-add-angular-to-manifestyml
     tags:
       - 'v*'
 
 env:
   REGISTRY: ghcr.io
   REPOSITORY_NAME: austriandatalab
-  IMAGE_NAME: baas-backend
+  IMAGE_NAME_BACKEND: baas-backend
+  IMAGE_NAME_FRONTEND: baas-frontend
 
 jobs:
   backend-build-and-push:
@@ -34,7 +36,7 @@ jobs:
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v4
   
-      - name: Build and conditionally push image to ghcr.io
+      - name: Build and conditionally push the backend image to ghcr.io
         uses: docker/build-push-action@v5
         with:
           context: backend
@@ -43,15 +45,28 @@ jobs:
           # Push only on v* tags
           push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: |
-            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME }}:${{ env.GITHUB_REF_NAME }}
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_BACKEND }}:latest
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_BACKEND }}:${{ env.GITHUB_REF_NAME }}
+
+      - name: Build and conditionally push the frontend image to ghcr.io
+        uses: docker/build-push-action@v5
+        with:
+          context: frontend
+          build-args: |
+            FOO=bar
+          # Push only on v* tags
+          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_FRONTEND }}:latest
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ env.GITHUB_REF_NAME }}
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
         continue-on-error: true
         with:
-          image-ref: '${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}'
+          image-ref: '${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }}'
           ignore-unfixed: true
           exit-code: '1'
           format: 'sarif'
