@@ -100,7 +100,7 @@
 //
 
 
-#let data = json("data.json")
+#let data = json.decode(sys.inputs.data)
 
 #set page(
   "a4",
@@ -124,5 +124,5 @@
   numbered: data.numbered, 
   lines: data.lines,
   tag: data.tag,
-  (data.header,) + data.data,
+  (data.header,) + data.rows,
 );

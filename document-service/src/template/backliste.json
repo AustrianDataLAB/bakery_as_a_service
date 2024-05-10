@@ -4,7 +4,7 @@
     "numbered": true,
     "lines": true,
     "header": ["Gebäck", "Stück", "Vorbereitet"],
-    "data": [
+    "rows": [
         ["Anton", 2, false],
         ["Babsi", 10, true],
         ["Caro", 3, false],
