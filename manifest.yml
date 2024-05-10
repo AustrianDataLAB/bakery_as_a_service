@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
         - name: baas-frontend
-          image: ghcr.io/austriandatalab/baas_frontend
+          image: ghcr.io/austriandatalab/baas-frontend
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:

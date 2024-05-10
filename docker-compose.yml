@@ -23,9 +23,6 @@ services:
     build:
       context: ./frontend
       dockerfile: ./Dockerfile.test
-    depends_on:
-      frontend:
-        condition: service_healthy
     networks:
       - baas_network
 
