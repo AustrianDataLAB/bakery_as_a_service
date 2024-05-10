@@ -43,7 +43,7 @@ jobs:
           build-args: |
             FOO=bar
           # Push only on v* tags
-          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+          # push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_BACKEND }}:latest
@@ -56,7 +56,7 @@ jobs:
           build-args: |
             FOO=bar
           # Push only on v* tags
-          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+          # push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_FRONTEND }}:latest
