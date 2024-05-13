@@ -16,14 +16,15 @@ services:
     depends_on:
       backend:
         condition: service_healthy  
+    networks:
+      - baas_network
 
   frontend-test:
     build:
       context: ./frontend
       dockerfile: ./Dockerfile.test
-    depends_on:
-      frontend:
-        condition: service_healthy
+    networks:
+      - baas_network
 
   backend:
     container_name: backend
@@ -55,6 +56,8 @@ services:
     depends_on:
       backend-db:
         condition: service_healthy
+    networks:
+      - baas_network
 
   backend-db:
     container_name: backend-db
@@ -72,4 +75,8 @@ services:
     volumes:
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
       - ./volume/backend-db:/var/lib/postgresql/data/
+    networks:
+      - baas_network
 
+networks:
+  baas_network:

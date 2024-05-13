@@ -13,7 +13,49 @@ spec:
       storage: 4Gi
 
 ---
+# Frontend deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baas-frontend
+spec:
+  progressDeadlineSeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      servicename: baas-frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        servicename: baas-frontend
+    spec:
+      containers:
+        - name: baas-frontend
+          image: ghcr.io/austriandatalab/baas-frontend
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 512Mi
+            requests:
+              cpu: "50m"
+              memory: 64Mi
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
 
+---
 # Directus deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -146,6 +188,22 @@ spec:
           claimName: baas-backend-db
 
 ---
+# Frontend service
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-baas-frontend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    servicename: baas-frontend
+
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -179,6 +237,13 @@ spec:
                 name: service-baas-backend
                 port:
                   number: 8055
+            path: /admin
+            pathType: ImplementationSpecific
+          - backend:
+              service:
+                name: service-baas-frontend
+                port:
+                  number: 80
             path: /
             pathType: ImplementationSpecific
   tls:
