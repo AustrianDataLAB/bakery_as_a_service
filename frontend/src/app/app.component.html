@@ -2,9 +2,11 @@
 
 <main class="main">
   <div class="content">
-    <div *ngFor="let product of products">
-      {{product.name}} {{product.price}} EUR
+    @for(product of products; track product) {
+      <div>
+        {{product.name}} {{product.price}} EUR
+      </div>
+    }
     </div>
-  </div>
 </main>
 

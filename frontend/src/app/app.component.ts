@@ -11,7 +11,7 @@ import { BackendService, Product } from './backend.service';
 })
 export class AppComponent implements OnInit {
   title = 'My Bakery';
-  products: Product[] = [];
+  public products: Product[] = [];
 
   constructor(public backendService: BackendService) {
 

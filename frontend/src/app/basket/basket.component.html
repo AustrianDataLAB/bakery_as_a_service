@@ -3,10 +3,12 @@
         <th>name</th>
         <th>Price</th>
     </tr>
-    <tr *ngFor="let product of products">
+    @for(product of products; track product) {
+    <tr>
         <td>{{product.name}}</td>
-        <td>{{product.price}}EUR</td>
+        <td>{{product.price}} EUR</td> 
     </tr>
+    }
 </table>
 
 <button>Checkout</button>

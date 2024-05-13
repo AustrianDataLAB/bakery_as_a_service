@@ -10,7 +10,7 @@ import { BackendService, Product } from '../backend.service';
   styleUrl: './basket.component.scss'
 })
 export class BasketComponent implements OnInit {
-  products: Product[] = []; 
+  public products: Product[] = []; 
 
   constructor(public basketService: BasketService,
      public backendService: BackendService) {
