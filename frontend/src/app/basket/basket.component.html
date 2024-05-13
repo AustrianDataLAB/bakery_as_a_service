@@ -1,0 +1,12 @@
+<table>
+    <tr>
+        <th>name</th>
+        <th>Price</th>
+    </tr>
+    <tr *ngFor="let product of products">
+        <td>{{product.name}}</td>
+        <td>{{product.price}}EUR</td>
+    </tr>
+</table>
+
+<button>Checkout</button>

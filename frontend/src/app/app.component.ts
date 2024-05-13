@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { BackendService, Product } from './backend.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,17 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'frontend';
+export class AppComponent implements OnInit {
+  title = 'My Bakery';
+  products: Product[] = [];
+
+  constructor(public backendService: BackendService) {
+
+  }
+
+  ngOnInit(): void {
+    this.backendService.getAllProducts()
+      .then((p) => this.products = p)
+      .catch((err) => console.error(err));
+  }
 }
