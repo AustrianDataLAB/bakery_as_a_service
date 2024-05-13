@@ -39,7 +39,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: backend
-          push: true
+          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_BACKEND }}:latest
@@ -86,7 +86,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: frontend
-          push: true
+          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_FRONTEND }}:latest
