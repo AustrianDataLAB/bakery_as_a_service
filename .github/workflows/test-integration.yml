@@ -1,0 +1,16 @@
+name: Run integration test using docker-compose
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and run tests
+        run: make test
+      - name: TearDown
+        run: make down

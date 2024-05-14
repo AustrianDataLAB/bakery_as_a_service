@@ -7,7 +7,7 @@ application including web shop + planning software for goods and delivery.
 
 ## Local Development Setup
 
-* `docker-compose up`
+* `make up`
 * Open `http://localhost:8055/` locally and login with `admin@example.com` + `admin`
 
 ## Components Overview
@@ -61,3 +61,7 @@ Overnight bakers night need to prepare the ordered goods which are then shipped 
 ## Value proposition
 
 For details please refer to: https://docs.google.com/document/d/1pH0qjtOCmJ9wbqzUIkqdiRtdwsFonX-IpqglRnEzz4I/edit?usp=sharing
+
+# Local Developer Setup
+
+* `make`

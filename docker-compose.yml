@@ -59,6 +59,15 @@ services:
     networks:
       - baas_network
 
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ["npm", "test"]
+    depends_on:
+      backend:
+        condition: service_healthy
+
   backend-db:
     container_name: backend-db
     platform: linux/amd64 # for platform error on Apple M1 chips
