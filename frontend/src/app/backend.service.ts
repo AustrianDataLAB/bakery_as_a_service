@@ -23,7 +23,15 @@ export class BackendService {
   constructor() { }
 
   async login(email: string, password: string) {
-    return this.client.login(email, password);
+    const response = await this.client.login(email, password);
+
+    localStorage.setItem('user', JSON.stringify(response));
+
+    return response;
+  }
+
+  async logout() {
+    this.client.logout();
   }
 
   async getAllProducts(): Promise<Product[]> {

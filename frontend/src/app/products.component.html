@@ -1,0 +1,11 @@
+Products
+
+@if(products.length == 0) {
+      <p>There are currently no products available</p>
+}
+
+@for(product of products; track product) {
+  <div>
+    {{product.name}} {{product.price}} EUR
+  </div>
+}

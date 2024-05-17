@@ -26,7 +26,7 @@ export class LoginComponent {
       const data = await this.backendService.login(this.loginForm.value.email!, this.loginForm.value.password!);
       console.log(data);
       localStorage.setItem('user', JSON.stringify(data));
-      this.router.navigate(['/shop'])
+      this.router.navigateByUrl('/shop')
     }
   }
 }
