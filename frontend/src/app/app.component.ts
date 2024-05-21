@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { BackendService, Product } from './backend.service';
 
 @Component({
   selector: 'app-root',
