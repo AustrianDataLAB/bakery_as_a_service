@@ -22,6 +22,18 @@ export class BackendService {
 
   constructor() { }
 
+  setAuth(): boolean {
+    const auth = localStorage.getItem('user');
+
+    if(auth != null) {
+      const token = JSON.parse(auth)['access_token']; 
+      this.client.setToken(token);
+      return true;
+    } 
+
+    return false;
+  }
+
   async login(email: string, password: string) {
     const response = await this.client.login(email, password);
 
@@ -35,10 +47,12 @@ export class BackendService {
   }
 
   async getAllProducts(): Promise<Product[]> {
+    this.setAuth();
     return this.client.request(readItems('products'));
   }
 
   async getProduct(id: string) : Promise<Product> {
+    this.setAuth();
     return this.client.request(readItem('products', id));
   }
 }
