@@ -20,7 +20,7 @@ def get_template():
 
 class DocumentList(BaseModel):
     title: str
-    tag: str
+    tag: str | None
     numbered: bool = True
     lines: bool = True
     header: list[str]
