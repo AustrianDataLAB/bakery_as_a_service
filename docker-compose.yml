@@ -6,7 +6,7 @@ services:
       context: ./frontend
     image: baas_frontend
     ports: 
-      - 4201:80
+      - 4200:80
     healthcheck:
       test: wget localhost:80 --no-verbose --tries=1 --spider || exit 1
       interval: 5s
@@ -32,6 +32,9 @@ services:
       context: ./backend
     ports:
       - 8055:8055
+    volumes:
+      - ./volume/backend/uploads/:/directus/uploads/
+      - ./volume/backend/extensions/:/directus/extensions/
     environment:
       KEY: "replace-with-random-value"
       SECRET: "replace-with-random-value"
@@ -68,15 +71,14 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "directus"
-    ports:
-      - "5432:5432"
-    volumes:
-      - ~/volume/db:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d directus -U postgres"]
       interval: 3s
       timeout: 3s
       retries: 10
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./volume/backend-db:/var/lib/postgresql/data/
     networks:
       - baas_network
 
