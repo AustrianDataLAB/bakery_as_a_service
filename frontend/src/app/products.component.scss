@@ -1,0 +1,25 @@
+.products {
+    display: flex;
+    background-color: 	#E5E5E5;
+}
+
+.product-card {
+    padding: 25px;
+    opacity: 0.75;
+    transition: opacity .5s ease-out;
+    transition: transform .5s ease-out;
+    border-radius: 5%;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.product-card img {
+    width: 150px;
+    border-radius: 50%;
+}
+
+.product-card:hover {
+    background-color: 	#E5E5E5;
+    opacity: 1;
+    cursor: pointer;
+    transform: scale(1.05);
+}

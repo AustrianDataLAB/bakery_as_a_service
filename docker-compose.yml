@@ -47,6 +47,10 @@ services:
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
       WEBSOCKETS_ENABLED: "true"
+      DB_POOL__MIN: 1
+      DB_POOL__IDLE_TIMEOUT_MILLIS: 3000
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "true"
     healthcheck:
       test: wget localhost:8055/admin --no-verbose --tries=1 --spider || exit 1
       interval: 5s
