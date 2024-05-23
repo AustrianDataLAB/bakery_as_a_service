@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { BackendService, Product } from './backend.service';
 
 @Component({
   selector: 'products-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterModule],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
 })

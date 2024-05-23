@@ -1,11 +1,11 @@
 <ul class="navbar">
-  <li><a routerLink="/shop">Shop</a></li>
-  <li><a routerLink="/cart">Cart</a></li>
+  <li><a [routerLink]="['/shop']">Shop</a></li>
+  <li><a [routerLink]="['/cart']">Cart</a></li>
 </ul>
 
 <table>
     <tr>
-        <th>name</th>
+        <th>Name</th>
         <th>Price</th>
     </tr>
     @for(product of products; track product) {

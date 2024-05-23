@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { BasketService } from '../basket.service';
 import { BackendService, Product } from '../backend.service';
+import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-basket',
   standalone: true,
-  imports: [],
+  imports: [RouterOutlet, RouterModule],
   templateUrl: './basket.component.html',
   styleUrl: './basket.component.scss'
 })
