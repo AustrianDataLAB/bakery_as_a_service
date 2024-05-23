@@ -15,6 +15,16 @@ export class BasketService {
     localStorage.setItem("products", JSON.stringify(value.map((x) => x.id)));
   }
 
+  replaceAllStrings(value: string[]): void {
+    localStorage.setItem("products", JSON.stringify(value));
+  }
+
+  addProduct(value: string): void {
+    var products = this.getAll();
+    products.push(value);
+    this.replaceAllStrings(products);
+  }
+
   removeProduct(value: string): void {
     const item = localStorage.getItem("products");
     var products = JSON.parse(item!);

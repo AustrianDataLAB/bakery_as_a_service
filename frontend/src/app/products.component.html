@@ -11,7 +11,7 @@
 
 <div class="products">
   @for(product of products; track product) {
-    <div class="product-card">
+    <div class="product-card" (click)="add(product)">
       <div>{{product.name}}</div><div>{{product.price}} EUR</div>
       <br/>
       <img src="https://www.thespruceeats.com/thmb/j4mujy24lcmnyW_a7VS1sVP4Mw4=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/loaf-of-bread-182835505-58a7008c5f9b58a3c91c9a14.jpg"/>

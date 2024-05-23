@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { BackendService, Product } from './backend.service';
+import { BasketService } from './basket.service';
 
 @Component({
   selector: 'products-root',
@@ -13,7 +14,7 @@ export class ProductsComponent implements OnInit {
   title = 'My Bakery';
   public products: Product[] = [];
 
-  constructor(public backendService: BackendService) {
+  constructor(public backendService: BackendService, public basketService: BasketService) {
 
   }
 
@@ -21,5 +22,10 @@ export class ProductsComponent implements OnInit {
     this.backendService.getAllProducts()
       .then((p) => this.products = p)
       .catch((err) => console.error(err));
+  }
+
+  add(product: Product): void {
+    this.basketService.addProduct(product.id);    
+    console.log('Added');
   }
 }
