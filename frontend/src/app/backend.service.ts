@@ -9,7 +9,7 @@ export interface Product {
 }
 
 interface Schema {
-  products: Product[];
+  Products: Product[];
 }
 
 @Injectable({
@@ -48,11 +48,11 @@ export class BackendService {
 
   async getAllProducts(): Promise<Product[]> {
     this.setAuth();
-    return this.client.request(readItems('products'));
+    return this.client.request(readItems("Products"));
   }
 
   async getProduct(id: string) : Promise<Product> {
     this.setAuth();
-    return this.client.request(readItem('products', id));
+    return this.client.request(readItem("Products", id));
   }
 }

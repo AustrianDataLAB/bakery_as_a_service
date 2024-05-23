@@ -1,8 +1,13 @@
+<ul class="navbar">
+  <li><a routerLink="/shop">Shop</a></li>
+  <li><a routerLink="/cart">Cart</a></li>
+</ul>
+
+<h3>Products</h3>
+
 @if(products.length == 0) {
       <p>There are currently no products available</p>
 }
-
-<h3>Products</h3>
 
 <div class="products">
   @for(product of products; track product) {
