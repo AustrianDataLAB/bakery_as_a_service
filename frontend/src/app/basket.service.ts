@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Product } from './backend.service';
+import { BackendService, Order, OrderItem, Product } from './backend.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BasketService {
+  constructor(public backendService: BackendService) {
+
+  }
+
   getAll(): string[] {
       const item = localStorage.getItem("products");
 
@@ -33,6 +37,35 @@ export class BasketService {
     products.splice(index, 1);
 
     localStorage.setItem("products", JSON.stringify(products));
+  }
+
+  order(customer_id: string, products: Product[]): void {
+    const order: Order = {
+      id: undefined,
+      customer_id: customer_id,
+      status: "ordered",
+      total_price: products.reduce((sum, current) => sum + parseFloat(current.price + ""), 0),
+      date_created: undefined,
+    };
+
+    var items: OrderItem[] = [];
+
+    this.backendService.createOrder(order)
+      .then((order) => {
+        console.log(order)
+
+        products.forEach((product) => {
+          items.push({
+            id: undefined,
+            order_id: order.id!,
+            quantity: 1,
+            price_per_item: product.price,
+            product_id: product.id
+          });
+        });
+
+        this.backendService.createOrderItems(items)
+    });
   }
 
   clearAll(): void {
