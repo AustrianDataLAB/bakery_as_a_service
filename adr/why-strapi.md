@@ -1,7 +1,7 @@
 # Using strapi as backend
 
 ## Status
-The status of this decision is: **accepted** ✅
+The status of this decision is: **superseded** 
 
 ## Context
 (Strapi)[https://strapi.io/] is a headless content management system (CMS), meaning that it offers an API (RESTful or GraphQL) to the frontend, making it *flexible* as it can be used with any front-end tool able to consume those. It is *customizable* as it allows to create custom content types and connect them with other data structures recreating the database schema on the fly using a *powerful dashboard*.
