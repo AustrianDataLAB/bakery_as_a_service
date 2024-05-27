@@ -1,24 +1,24 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.frontend.ingress.enabled -}}
 {{- $fullName := include "baas.fullname" . -}}
-{{- $svcPort := .Values.directus.service.port -}}
+{{- $svcPort := .Values.frontend.service.port -}}
 
-# Ingress + TLS (with letsencrypt auto cert creation) to expose the Directus Admin UI
+# Ingress + TLS (with letsencrypt auto cert creation) to expose the frontend angular app
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
     {{- include "baas.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.frontend.ingress.annotations }}
   annotations:
       {{- toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ .Values.ingress.name }}
+  name: {{ .Values.frontend.ingress.name }}
 spec:
-  {{- if .Values.ingress.className }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.frontend.ingress.className }}
+  ingressClassName: {{ .Values.frontend.ingress.className }}
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
+    {{- range .Values.frontend.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -29,14 +29,14 @@ spec:
               {{- end }}
             backend:
               service:
-                name: {{ $.Values.directus.name }}
+                name: {{ $.Values.frontend.name }}
                 port:
                   number: {{ $svcPort }}
             {{- end }}
       {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.frontend.ingress.tls }}
   tls:
-    {{- range .Values.ingress.tls }}
+    {{- range .Values.frontend.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
