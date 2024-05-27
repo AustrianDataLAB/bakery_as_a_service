@@ -27,4 +27,8 @@ export class BasketComponent implements OnInit {
         .catch((err) => console.error(err));
     });
   }
+
+  checkout(): void {
+    this.basketService.order(this.backendService.getId()!, this.products);
+  }
 }

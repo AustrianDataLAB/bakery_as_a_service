@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BasketComponent } from './basket.component';
+import { provideRouter } from '@angular/router';
 
 describe('BasketComponent', () => {
   let component: BasketComponent;
@@ -8,7 +9,8 @@ describe('BasketComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BasketComponent]
+      imports: [BasketComponent],
+      providers: [provideRouter([])]
     })
     .compileComponents();
     

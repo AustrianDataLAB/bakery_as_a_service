@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { createDirectus, rest, authentication, readItems, readItem } from '@directus/sdk';
+import { createDirectus, rest, authentication, readItems, readItem, createItem, createItems } from '@directus/sdk';
 
 export interface Product {
   id: string;
@@ -8,8 +8,26 @@ export interface Product {
   price: number;
 }
 
+export interface Order {
+  id: number | undefined;
+  customer_id: string;
+  status: string;
+  total_price: number;
+  date_created: Date | undefined;
+}
+
+export interface OrderItem {
+  id: string | undefined;
+  order_id: number;
+  quantity: number;
+  price_per_item: number;
+  product_id: string;
+}
+
 interface Schema {
   Products: Product[];
+  Orders: Order[];
+  Order_Items: OrderItem[];
 }
 
 @Injectable({
@@ -34,6 +52,20 @@ export class BackendService {
     return false;
   }
 
+  getId(): string | undefined {
+      const auth = localStorage.getItem('user');
+
+      if(auth != null) {
+        return this.parseJwt(JSON.parse(auth)['access_token']).id; 
+      } 
+
+      return undefined;
+    }
+
+  parseJwt (token: string) {
+    return JSON.parse(atob(token.split('.')[1]).toString());
+  }
+
   async login(email: string, password: string) {
     const response = await this.client.login(email, password);
 
@@ -44,6 +76,16 @@ export class BackendService {
 
   async logout() {
     this.client.logout();
+  }
+
+  async createOrder(order: Order): Promise<Order> {
+    this.setAuth();
+    return this.client.request(createItem( "Orders", order ));
+  }
+
+  async createOrderItems(orders: OrderItem[]): Promise<OrderItem[]> {
+    this.setAuth();
+    return this.client.request(createItems( "Order_Items", orders ));
   }
 
   async getAllProducts(): Promise<Product[]> {
