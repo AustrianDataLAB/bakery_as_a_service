@@ -7,11 +7,13 @@
     <tr>
         <th>Name</th>
         <th>Price</th>
+        <th>Quantity</th>
     </tr>
-    @for(product of products; track product) {
+    @for(p of products; track p) {
     <tr>
-        <td>{{product.name}}</td>
-        <td>{{product.price}} EUR</td> 
+        <td>{{p.product.name}}</td>
+        <td>{{p.product.price}} EUR</td> 
+        <td>{{p.quantity}}</td> 
     </tr>
     }
 </table>

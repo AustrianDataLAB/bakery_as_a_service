@@ -3,6 +3,11 @@ import { BasketService } from '../basket.service';
 import { BackendService, Product } from '../backend.service';
 import { RouterModule, RouterOutlet } from '@angular/router';
 
+export interface ProductItem {
+  product: Product;
+  quantity: number;
+}
+
 @Component({
   selector: 'app-basket',
   standalone: true,
@@ -11,7 +16,8 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   styleUrl: './basket.component.scss'
 })
 export class BasketComponent implements OnInit {
-  public products: Product[] = []; 
+  
+  public products: ProductItem[] = []; 
 
   constructor(public basketService: BasketService,
      public backendService: BackendService) {
@@ -22,13 +28,13 @@ export class BasketComponent implements OnInit {
     const ids = this.basketService.getAll();
 
     ids.forEach((x) => {
-      this.backendService.getProduct(x)
-        .then((product) => this.products.push(product))
+      this.backendService.getProduct(x.id)
+        .then((product) => this.products.push({product: product, quantity: x.quantity}))
         .catch((err) => console.error(err));
     });
   }
 
   checkout(): void {
-    this.basketService.order(this.backendService.getId()!, this.products);
+    this.basketService.order(this.backendService.getId()!, this.products).then(() => this.products = []);
   }
 }
