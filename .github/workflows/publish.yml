@@ -110,3 +110,26 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
 
+  helm-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.2.0
+        with:
+          version: v3.14.4
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4
+
+      - name: Push helm chart to registry
+        run: .github/workflows/push_helm.sh
+        env:
+          REGISTRY_USERNAME: ${{ github.actor }}
+          REGISTRY_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
