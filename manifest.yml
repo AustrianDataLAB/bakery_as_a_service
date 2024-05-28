@@ -239,6 +239,26 @@ spec:
                   number: 8055
             path: /admin
             pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - baas-admin.caas-0024.dev.austrianopencloudcommunity.org
+      secretName: tls-baas-admin-ingress
+
+---
+
+# Ingress + TLS (with letsencrypt auto cert creation) to expose the Directus Admin UI
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
+  name: baas-frontend-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: baas.caas-0024.dev.austrianopencloudcommunity.org
+      http:
+        paths:
           - backend:
               service:
                 name: service-baas-frontend
@@ -248,8 +268,8 @@ spec:
             pathType: ImplementationSpecific
   tls:
     - hosts:
-        - baas-admin.caas-0024.dev.austrianopencloudcommunity.org
-      secretName: tls-baas-admin-ingress
+        - baas.caas-0024.dev.austrianopencloudcommunity.org
+      secretName: tls-baas-frontend-ingress
 
 ---
 apiVersion: v1
