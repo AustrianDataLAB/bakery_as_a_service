@@ -24,8 +24,8 @@ export class ProductsComponent implements OnInit {
       .catch((err) => console.error(err));
   }
 
-  add(product: Product): void {
-    this.basketService.addProduct(product.id);    
+  add(product: Product, quantity: number): void {
+    this.basketService.addProduct(product.id, quantity);    
     console.log('Added');
   }
 }
