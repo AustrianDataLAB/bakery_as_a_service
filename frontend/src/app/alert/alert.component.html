@@ -1,0 +1,5 @@
+<ngb-alert *ngFor="let alert of alerts" [type]="alert.type" (close)="closeAlert(alert)" class="d-flex align-items-center">
+    <div [innerHTML]="alert.icon" class="me-2"></div>
+    <span [innerHTML]="alert.message"></span>
+</ngb-alert>
+  

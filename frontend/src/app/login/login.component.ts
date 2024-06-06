@@ -2,16 +2,18 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BackendService } from '../backend.service';
 import { Router } from '@angular/router';
+import { AlertService } from '../alert.service';
+import { AlertComponent } from "../alert/alert.component";
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [ReactiveFormsModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+    selector: 'app-login',
+    standalone: true,
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss',
+    imports: [ReactiveFormsModule, AlertComponent]
 })
 export class LoginComponent {
-  constructor(public backendService: BackendService, public router: Router) {
+  constructor(public backendService: BackendService, public router: Router, public alertService: AlertService) {
 
   }
 
@@ -20,6 +22,24 @@ export class LoginComponent {
     password: new FormControl('', [Validators.required])
   })
 
+  showSuccessAlert() {
+    this.alertService.showAlert({
+      message: '<strong>Success!</strong> This is a success alert with an icon.',
+      type: 'success',
+      icon: '<i class="bi bi-check-circle"></i>',
+      timeout: 3000
+    });
+  }
+
+  showDangerAlert() {
+    this.alertService.showAlert({
+      message: '<strong>Error!</strong> Form is not valid!',
+      type: 'danger',
+      icon: '<i class="bi bi-exclamation-triangle-fill"></i>',
+      timeout: 10000
+    });
+  }
+
   async onSubmit(){
     if(this.loginForm.valid){
       console.log(this.loginForm.value);
@@ -27,6 +47,10 @@ export class LoginComponent {
       console.log(data);
       localStorage.setItem('user', JSON.stringify(data));
       this.router.navigateByUrl('/shop')
+    }
+    else{
+      console.log('Form is invalid');
+      this.showDangerAlert();
     }
   }
 }
