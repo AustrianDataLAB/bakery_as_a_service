@@ -1,0 +1,47 @@
+{{- if .Values.directus.ingress.enabled -}}
+{{- $fullName := include "baas.fullname" . -}}
+{{- $svcPort := .Values.directus.service.port -}}
+
+# Ingress + TLS (with letsencrypt auto cert creation) to expose the Directus Admin UI
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    {{- include "baas.labels" . | nindent 4 }}
+  {{- with .Values.directus.ingress.annotations }}
+  annotations:
+      {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ .Values.directus.ingress.name }}
+spec:
+  {{- if .Values.directus.ingress.className }}
+  ingressClassName: {{ .Values.directus.ingress.className }}
+  {{- end }}
+  rules:
+    {{- range .Values.directus.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+            {{- range .paths }}
+          - path: {{ .path }}
+              {{- if .pathType }}
+            pathType: {{ .pathType }}
+              {{- end }}
+            backend:
+              service:
+                name: {{ $.Values.directus.name }}
+                port:
+                  number: {{ $svcPort }}
+            {{- end }}
+      {{- end }}
+  {{- if .Values.directus.ingress.tls }}
+  tls:
+    {{- range .Values.directus.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+{{- end }}

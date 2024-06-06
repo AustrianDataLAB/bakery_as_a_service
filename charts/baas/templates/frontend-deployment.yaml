@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.frontend.name }}
+spec:
+  progressDeadlineSeconds: 60
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      servicename: {{ .Values.frontend.name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        servicename: {{ .Values.frontend.name }}
+    spec:
+      containers:
+      - name: {{ .Values.frontend.name }}
+        image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
+        imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: {{ .Values.frontend.service.port }}
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "{{ .Values.frontend.resources.limits.cpu }}"
+            memory: {{ .Values.frontend.resources.limits.memory }}
+          requests:
+            cpu: "{{ .Values.frontend.resources.requests.cpu }}"
+            memory: {{ .Values.frontend.resources.requests.memory }}
+      restartPolicy: {{ .Values.frontend.restartPolicy }}
+      terminationGracePeriodSeconds: {{ .Values.frontend.terminationGracePeriodSeconds }}
