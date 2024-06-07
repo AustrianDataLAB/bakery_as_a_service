@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.document.service.name }}
+spec:
+  type: {{ .Values.document.service.type }}
+  ports:
+    - port: {{ .Values.document.service.port }}
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    servicename: {{ .Values.document.name }}

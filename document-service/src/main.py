@@ -4,27 +4,17 @@ from functools import cache
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, Response, RedirectResponse
-from pydantic import BaseModel
 
-from docservice import generation
+from docservice import generation, model
 
 TEMPLATE = path.abspath(path.join(path.dirname(__file__), "template"))
 
 
 @cache
-def get_template():
-    template_path = path.join(TEMPLATE, "document_list.typ")
+def get_template(name: str):
+    template_path = path.join(TEMPLATE, name + ".typ")
     with open(template_path, "r") as fd:
         return fd.read()
-
-
-class DocumentList(BaseModel):
-    title: str
-    tag: str | None
-    numbered: bool = True
-    lines: bool = True
-    header: list[str]
-    rows: list[list[Any]]
 
 
 app = FastAPI(
@@ -45,9 +35,19 @@ def read_root():
     summary="Example JSON baker lists",
     description="Retrieve an example JSON documents that can be passed to the baker list generation endpoint",
 )
-def get_example():
+def get_list_example():
     return FileResponse(path.join(TEMPLATE, "backliste.json"))
 
+@app.get(
+    "/example/invoice",
+    summary="Example JSON invoice data",
+    description="""
+    Retrieve an example JSON document that can be passed to the invoice endpoint.
+    The data contains an example base64-encoded logo, as well as several items.
+    """
+)
+def get_invoice_example():
+    return FileResponse(path.join(TEMPLATE, "invoice.json"))
 
 @app.post(
     "/generate/list",
@@ -57,21 +57,39 @@ def get_example():
         Headers and all rows must have the same length.
     """,
 )
-def generate_doc(file: DocumentList):
+def generate_doc(file: model.DocumentList):
 
-    header_len = len(file.header)
-    for e in file.rows:
-        if len(e) != header_len:
-            raise HTTPException(
-                status_code=400,
-                detail="The length of the header must be equal to the length of all rows",
-            )
+    try:
+        file.verify_document_list()
+    except model.MalformedDocumentListException as e:
+        raise HTTPException(
+            status_code=400,
+            detail=e.msg,
+        )
 
     try:
         pdf = generation.generate_document(
-            get_template(), {"data": file.model_dump_json()}
+            get_template("document_list"), {"data": file.model_dump_json()}
         )
     except generation.GenerationException as e:
         raise HTTPException(status_code=500, detail=e.reason + "\n" + e.detail)
 
+    return Response(content=pdf, media_type="application/pdf")
+
+@app.post(
+    "/generate/invoice",
+    summary="Generate invoice pdf",
+    description="""
+        Generate a pdf that contains an invoice for customers.
+        The logo must be base64 encoded and either png or jpeg
+    """,
+)
+def generate_invoice(file: model.DocumentInvoice):
+    try:
+        pdf = generation.generate_document(
+            get_template("document_invoice"), {"data": file.model_dump_json()}
+        )
+    except generation.GenerationException as e:
+        raise HTTPException(status_code=500, detail=e.reason + "\n" + e.detail)
+    
     return Response(content=pdf, media_type="application/pdf")
