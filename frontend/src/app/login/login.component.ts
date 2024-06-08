@@ -72,7 +72,7 @@ export class LoginComponent {
     }
     else
     {
-      this.showDangerAlert('Invalid form data. Please check your email and password.');
+      this.showDangerAlert('Invalid form data!');
     }
   }
 }
