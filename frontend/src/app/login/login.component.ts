@@ -24,6 +24,9 @@ interface ErrorResponse {
     imports: [ReactiveFormsModule, AlertComponent, CommonModule]
 })
 export class LoginComponent {
+
+  public isLoading: boolean = false;
+
   constructor(public backendService: BackendService, public router: Router, public alertService: AlertService) {
 
   }
@@ -45,6 +48,8 @@ export class LoginComponent {
   async onSubmit(){
     if (this.loginForm.valid)
     {
+      this.isLoading = true;
+      this.loginForm.disable();
       console.log(this.loginForm.value);
       try {
         const data = await this.backendService.login(this.loginForm.value.email!, this.loginForm.value.password!);
@@ -58,7 +63,11 @@ export class LoginComponent {
         const errorMessage = errorResponse.errors?.[0]?.message || 'An unknown error occurred.';
         this.showDangerAlert(errorMessage);
       }
-      
+      finally
+      {
+        this.isLoading = false;
+        this.loginForm.enable();
+      }
 
     }
     else
