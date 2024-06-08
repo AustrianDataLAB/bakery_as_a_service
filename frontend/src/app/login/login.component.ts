@@ -6,6 +6,16 @@ import { AlertService } from '../alert.service';
 import { AlertComponent } from "../alert/alert.component";
 import { CommonModule } from '@angular/common';
 
+interface ErrorResponse {
+  errors: Array<{
+    message: string;
+    extensions: {
+      code: string;
+    };
+  }>;
+  response: {};
+}
+
 @Component({
     selector: 'app-login',
     standalone: true,
@@ -23,18 +33,9 @@ export class LoginComponent {
     password: new FormControl('', [Validators.required])
   })
 
-  showSuccessAlert() {
+  showDangerAlert(message: string) {
     this.alertService.showAlert({
-      message: '<strong>Success!</strong> This is a success alert with an icon.',
-      type: 'success',
-      icon: '<i class="bi bi-check-circle"></i>',
-      timeout: 3000
-    });
-  }
-
-  showDangerAlert() {
-    this.alertService.showAlert({
-      message: '<strong>Error!</strong> Form is not valid!',
+      message: `<strong>Error!</strong> ${message}`,
       type: 'danger',
       icon: '<i class="bi bi-exclamation-triangle-fill"></i>',
       timeout: 5000
@@ -42,16 +43,27 @@ export class LoginComponent {
   }
 
   async onSubmit(){
-    if(this.loginForm.valid){
+    if (this.loginForm.valid)
+    {
       console.log(this.loginForm.value);
-      const data = await this.backendService.login(this.loginForm.value.email!, this.loginForm.value.password!);
-      console.log(data);
-      localStorage.setItem('user', JSON.stringify(data));
-      this.router.navigateByUrl('/shop')
+      try {
+        const data = await this.backendService.login(this.loginForm.value.email!, this.loginForm.value.password!);
+        console.log(data);
+        localStorage.setItem('user', JSON.stringify(data));
+        this.router.navigateByUrl('/shop')
+      }
+      catch (error) {
+        // converting the error of type unknown to ErrorResponse in order to access the error message
+        const errorResponse = error as ErrorResponse;
+        const errorMessage = errorResponse.errors?.[0]?.message || 'An unknown error occurred.';
+        this.showDangerAlert(errorMessage);
+      }
+      
+
     }
-    else{
-      console.log('Form is invalid');
-      this.showDangerAlert();
+    else
+    {
+      this.showDangerAlert('Invalid form data. Please check your email and password.');
     }
   }
 }

@@ -68,9 +68,9 @@ export class BackendService {
 
   async login(email: string, password: string) {
     const response = await this.client.login(email, password);
-
+    
     localStorage.setItem('user', JSON.stringify(response));
-
+    
     return response;
   }
 
