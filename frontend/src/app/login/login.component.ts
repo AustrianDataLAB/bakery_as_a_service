@@ -36,7 +36,7 @@ export class LoginComponent {
       message: '<strong>Error!</strong> Form is not valid!',
       type: 'danger',
       icon: '<i class="bi bi-exclamation-triangle-fill"></i>',
-      timeout: 10000
+      timeout: 100000
     });
   }
 

@@ -31,6 +31,6 @@ export class AlertService {
     setTimeout(() => {
       this.alerts = this.alerts.filter(a => a !== alert);
       this.alertSubject.next(this.alerts);
-    }, 300); // Adjust the delay to match the CSS transition duration if any
+    }, 300);
   }
 }
