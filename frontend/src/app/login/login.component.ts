@@ -4,13 +4,14 @@ import { BackendService } from '../backend.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../alert.service';
 import { AlertComponent } from "../alert/alert.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-login',
     standalone: true,
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
-    imports: [ReactiveFormsModule, AlertComponent]
+    imports: [ReactiveFormsModule, AlertComponent, CommonModule]
 })
 export class LoginComponent {
   constructor(public backendService: BackendService, public router: Router, public alertService: AlertService) {
@@ -36,7 +37,7 @@ export class LoginComponent {
       message: '<strong>Error!</strong> Form is not valid!',
       type: 'danger',
       icon: '<i class="bi bi-exclamation-triangle-fill"></i>',
-      timeout: 100000
+      timeout: 5000
     });
   }
 
