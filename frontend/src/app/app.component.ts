@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule, RouterOutlet, Router } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 import { OnInit } from '@angular/core';
 
@@ -10,11 +10,11 @@ import { OnInit } from '@angular/core';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
   isLoggedIn: boolean = false;
 
-  constructor(private backendService: BackendService, private router: Router) {}
+  constructor(private backendService: BackendService) {}
 
   ngOnInit() {
     this.backendService.loggedIn.subscribe((loggedIn) => {
