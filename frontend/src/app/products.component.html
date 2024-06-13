@@ -9,7 +9,7 @@
     <div class="product-card">
       <div>{{product.name}}</div><div>{{product.price}} EUR</div>
       <br/>
-      <img src="https://www.thespruceeats.com/thmb/j4mujy24lcmnyW_a7VS1sVP4Mw4=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/loaf-of-bread-182835505-58a7008c5f9b58a3c91c9a14.jpg"/>
+      <img src="http://localhost:8055/assets/{{product.image}}"/> <!-- TODO replace by env -->
       <button (click)="add(product, 1)">1x</button><button (click)="add(product, 10)">10x</button><button (click)="add(product, 100)">100x</button>
     </div>
   }
