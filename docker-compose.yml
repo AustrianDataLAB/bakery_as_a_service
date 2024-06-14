@@ -35,6 +35,8 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    networks:
+      - baas_network
 
   frontend-test:
     build:
@@ -97,10 +99,11 @@ services:
       - 5432:5432
     volumes:
 
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./workflowdump.sql:/docker-entrypoint-initdb.d/workflowdump.sql
       - ./volume/backend-db:/var/lib/postgresql/data/
     networks:
       - baas_network
 
 networks:
   baas_network:
+    driver: bridge
