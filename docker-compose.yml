@@ -96,8 +96,6 @@ services:
     ports:
       - 5432:5432
     volumes:
-
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
       - ./volume/backend-db:/var/lib/postgresql/data/
     networks:
       - baas_network
