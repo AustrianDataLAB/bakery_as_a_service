@@ -1,0 +1,22 @@
+<div class="container">
+  <h3 class="mb-4">Products</h3>
+  <div class="row">
+    @if(products.length == 0) {
+      <p>There are currently no products available</p>
+    }
+    @for(product of products; track product) {
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="card h-100"> <!-- Ensure cards are of equal height -->
+          <img src="http://localhost:8055/assets/{{product.image}}" class="card-img-top img-fluid card-img-top-fixed" alt="{{product.name}}">
+          <div class="card-body">
+            <h5 class="card-title">{{product.name}}</h5>
+            <p class="card-text">{{product.price}} EUR</p>
+            <button class="btn btn-primary" (click)="add(product, 1)">1x</button>
+            <button class="btn btn-secondary" (click)="add(product, 10)">10x</button>
+            <button class="btn btn-success" (click)="add(product, 100)">100x</button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

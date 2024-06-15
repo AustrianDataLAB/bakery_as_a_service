@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { BackendService, Product } from './backend.service';
-import { BasketService } from './basket.service';
+import { BackendService, Product } from '../backend.service';
+import { BasketService } from '../basket.service';
 
 @Component({
   selector: 'products-root',
@@ -11,7 +11,6 @@ import { BasketService } from './basket.service';
   styleUrl: './products.component.scss'
 })
 export class ProductsComponent implements OnInit {
-  title = 'My Bakery';
   public products: Product[] = [];
 
   constructor(public backendService: BackendService, public basketService: BasketService) {

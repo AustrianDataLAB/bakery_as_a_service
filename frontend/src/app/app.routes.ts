@@ -1,6 +1,6 @@
 import { Routes, Router, CanActivateFn } from '@angular/router';
 import { LoginComponent } from './login/login.component';
-import { ProductsComponent } from './products.component';
+import { ProductsComponent } from './products/products.component';
 import { BasketComponent } from './basket/basket.component';
 import { BackendService } from './backend.service';
 import { inject } from '@angular/core';
