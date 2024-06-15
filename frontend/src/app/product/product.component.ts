@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BackendService, Product } from '../backend.service';
+import { BasketService } from '../basket.service';
 
 @Component({
   selector: 'app-product',
@@ -9,12 +11,20 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './product.component.scss'
 })
 export class ProductComponent implements OnInit {
-  productId: string | null = null;
+  product: Product | undefined;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, public backendService: BackendService, public basketService: BasketService, public router: Router) { }
 
   ngOnInit(): void {
-    this.productId = this.route.snapshot.paramMap.get('id');
+    const productId = this.route.snapshot.paramMap.get('id');
     // Load product details using this.productId
+    this.backendService.getProduct(productId!)
+      .then((product) => {
+        this.product = product;
+      })
+      .catch((err) => {
+        console.error(err);
+        this.router.navigateByUrl('/404');
+      });
   }
 }
