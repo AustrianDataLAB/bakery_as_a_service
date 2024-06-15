@@ -22,5 +22,5 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'shop', component: ProductsComponent, canActivate: [canActivate] },
     { path: 'cart', component: BasketComponent, canActivate: [canActivate] },
-    { path: 'product', component: ProductComponent, canActivate: [canActivate] }
+    { path: 'product/:id', component: ProductComponent, canActivate: [canActivate] }
 ];
