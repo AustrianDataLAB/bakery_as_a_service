@@ -9,11 +9,14 @@
         <div class="card h-100"> <!-- Ensure cards are of equal height -->
           <img src="http://localhost:8055/assets/{{product.image}}" class="card-img-top img-fluid card-img-top-fixed" alt="{{product.name}}">
           <div class="card-body">
-            <h5 class="card-title">{{product.name}}</h5>
-            <p class="card-text">{{product.price}} EUR</p>
-            <button class="btn btn-primary" (click)="add(product, 1)">1x</button>
-            <button class="btn btn-secondary" (click)="add(product, 10)">10x</button>
-            <button class="btn btn-success" (click)="add(product, 100)">100x</button>
+            <a href="/product/{{product.id}}" class="text-decoration-none text-reset">
+              <h5 class="card-title">{{product.name}}</h5>
+            </a>
+            <p class="card-text">{{product.price}} €</p>
+            <button class="btn btn-primary" (click)="add(product, 1, $event)">
+              <i class="bi bi-cart-plus"></i>
+              Add to cart
+            </button>
           </div>
         </div>
       </div>
