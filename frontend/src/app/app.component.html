@@ -7,7 +7,20 @@
     <ul class="nav nav-pills">
       @if (isLoggedIn) {
         <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/shop']">Shop</a></li>
-        <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/cart']">Cart</a></li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/cart']">
+            <i class="bi bi-cart3"></i>
+            Cart
+            @if (productsInBasket > 0) {
+              <span class="position-relative ms-3">
+                <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger">
+                  {{productsInBasket}}
+                  <span class="visually-hidden">items in cart</span>
+                </span>
+              </span>
+              }
+          </a>
+        </li>
         <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/login']" (click)="logout()">Logout</a></li>
       } 
       @if (!isLoggedIn) {

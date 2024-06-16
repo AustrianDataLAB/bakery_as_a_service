@@ -22,7 +22,7 @@ export class BasketComponent implements OnInit {
   constructor(public basketService: BasketService, public backendService: BackendService) {}
 
   async ngOnInit(): Promise<void> {
-    const ids = this.basketService.getAll();
+    const ids = this.basketService.loadFromLocalStorage();
     for (const x of ids) {
       try {
         const product = await this.backendService.getProduct(x.id);

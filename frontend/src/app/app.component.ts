@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 import { OnInit } from '@angular/core';
+import { BasketService } from './basket.service';
 
 @Component({
   selector: 'app-root',
@@ -13,12 +14,17 @@ import { OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
 
   isLoggedIn: boolean = false;
+  productsInBasket: number = 0;
 
-  constructor(private backendService: BackendService) {}
+  constructor(private backendService: BackendService, private basketService: BasketService) { }
 
   ngOnInit() {
     this.backendService.loggedIn.subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
+    });
+
+    this.basketService.basketItems$.subscribe((items) => {
+      this.productsInBasket = items.length;
     });
   }
 
