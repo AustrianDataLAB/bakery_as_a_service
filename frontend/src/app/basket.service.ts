@@ -32,7 +32,7 @@ export class BasketService {
   addProduct(value: string, quantity: number): void {
     var products = this.getAll();
     products.push({ id: value, quantity: quantity });
-    products = this.summarise(products);
+    products = this.summarize(products);
     this.replaceAllStrings(products);
   }
 
@@ -92,7 +92,7 @@ export class BasketService {
   /**
    * if multiple products of the same kind have been added to the basket then sum the quantities
    */
-  summarise(products: BasketItem[]): BasketItem[] {
+  summarize(products: BasketItem[]): BasketItem[] {
     let hash: Map<string, number> = new Map();
 
     products.forEach((product) => {
