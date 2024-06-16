@@ -31,9 +31,8 @@ export class ProductsComponent implements OnInit {
   
     setTimeout(() => {
       button.innerHTML = '<i class="bi bi-cart-plus"></i> Add to cart';
-    }, 200); // Adjust timing as needed
+    }, 200);
 
-    this.basketService.addProduct(product.id, quantity);    
-    console.log('Added');
+    this.basketService.addProduct(product.id, quantity);
   }
 }

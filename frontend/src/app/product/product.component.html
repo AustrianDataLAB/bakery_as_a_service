@@ -12,13 +12,13 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <div class="input-group w-100">
-                        <button class="btn btn-outline-secondary" type="button">-</button>
-                        <input type="number" class="form-control" min="1" placeholder="1">
-                        <button class="btn btn-outline-secondary" type="button">+</button>
+                        <button class="btn btn-outline-secondary" type="button" (click)="decrementQuantity()">-</button>
+                        <input type="number" class="form-control" [(ngModel)]="quantity" (change)="setQuantity(quantity)" min="1" placeholder="1">
+                        <button class="btn btn-outline-secondary" type="button" (click)="incrementQuantity()">+</button>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <button class="btn btn-primary float-right w-100">
+                    <button class="btn btn-primary float-right w-100" (click)="addToBasket($event)">
                         <i class="bi bi-cart-plus"></i>
                         Add to Cart
                     </button>

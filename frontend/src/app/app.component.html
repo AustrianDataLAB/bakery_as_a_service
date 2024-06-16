@@ -6,7 +6,12 @@
     </a>
     <ul class="nav nav-pills">
       @if (isLoggedIn) {
-        <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/products']">Products</a></li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/products']">
+            <i class="bi bi-shop"></i>
+            Products
+          </a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/cart']">
             <i class="bi bi-cart3"></i>
@@ -29,8 +34,18 @@
         </li>
       } 
       @if (!isLoggedIn) {
-        <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/login']">Login</a></li>
-        <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/register']">Register</a></li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/login']">
+            <i class="bi bi-box-arrow-in-right"></i>
+            Login
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/register']">
+            <i class="bi bi-person-plus"></i>
+            Register
+          </a>
+        </li>
       }
     </ul>
   </header>
