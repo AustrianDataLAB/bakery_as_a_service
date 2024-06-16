@@ -25,7 +25,7 @@ export class BasketService {
     localStorage.setItem("products", JSON.stringify(value.map((x) => x.id)));
   }
 
-  replaceAllStrings(value: BasketItem[]): void {
+  updateProducts(value: BasketItem[]): void {
     localStorage.setItem("products", JSON.stringify(value));
   }
 
@@ -33,7 +33,7 @@ export class BasketService {
     var products = this.getAll();
     products.push({ id: value, quantity: quantity });
     products = this.summarize(products);
-    this.replaceAllStrings(products);
+    this.updateProducts(products);
   }
 
   removeProduct(value: string): void {
@@ -53,7 +53,7 @@ export class BasketService {
     localStorage.setItem("products", JSON.stringify(products));
   }
 
-  order(customer_id: string, products: ProductItem[]): Promise<void> {
+  async order(customer_id: string, products: ProductItem[]): Promise<void> {
     var items: any[] = [];
 
     products.forEach((x) => {
@@ -74,15 +74,13 @@ export class BasketService {
       date_created: undefined,
     };
 
-    return this.backendService.createOrder(order)
-      .then((order) => {
-        console.log(order)
-        this.backendService.createOrderItems(items.map((x) => {
-          return { order_id: order.id!, ...x };
-        })).then((_items) => {
-          this.clearAll();
-        });
-      });
+    const order_2 = await this.backendService.createOrder(order);
+    console.log(order_2);
+    this.backendService.createOrderItems(items.map((x_1) => {
+      return { order_id: order_2.id!, ...x_1 };
+    })).then((_items) => {
+      this.clearAll();
+    });
   }
 
   clearAll(): void {

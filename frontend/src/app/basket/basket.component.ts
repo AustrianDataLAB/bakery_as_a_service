@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BasketService } from '../basket.service';
+import { BasketService, BasketItem } from '../basket.service';
 import { BackendService, Product } from '../backend.service';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -14,25 +14,23 @@ export interface ProductItem {
   standalone: true,
   imports: [RouterOutlet, RouterModule, FormsModule],
   templateUrl: './basket.component.html',
-  styleUrl: './basket.component.scss'
+  styleUrls: ['./basket.component.scss']
 })
 export class BasketComponent implements OnInit {
-  
-  public products: ProductItem[] = []; 
+  public products: ProductItem[] = [];
 
-  constructor(public basketService: BasketService,
-     public backendService: BackendService) {
+  constructor(public basketService: BasketService, public backendService: BackendService) {}
 
-  }
-
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const ids = this.basketService.getAll();
-
-    ids.forEach((x) => {
-      this.backendService.getProduct(x.id)
-        .then((product) => this.products.push({product: product, quantity: x.quantity}))
-        .catch((err) => console.error(err));
-    });
+    for (const x of ids) {
+      try {
+        const product = await this.backendService.getProduct(x.id);
+        this.products.push({ product: product, quantity: x.quantity });
+      } catch (err) {
+        console.error(err);
+      }
+    }
   }
 
   remove(product: ProductItem): void {
@@ -43,10 +41,19 @@ export class BasketComponent implements OnInit {
   decrementQuantity(product: ProductItem): void {
     if (product.quantity > 1) {
       product.quantity--;
-    }
-    else {
+    } else {
       this.remove(product);
     }
+    this.basketService.updateProducts(this.toBasketItems(this.products));
+  }
+
+  setQuantity(product: ProductItem, quantity: number): void {
+    product.quantity = Math.max(quantity, 1);
+    this.basketService.updateProducts(this.toBasketItems(this.products));
+  }
+
+  toBasketItems(products: ProductItem[]): BasketItem[] {
+    return products.map((x) => ({ id: x.product.id, quantity: x.quantity }));
   }
 
   price(product: ProductItem): string {
@@ -54,15 +61,16 @@ export class BasketComponent implements OnInit {
   }
 
   get totalSum(): string {
-    const sum = this.products.reduce((acc, x) => acc + x.product.price * x.quantity, 0);
-    return sum.toFixed(2);
+    return this.products.reduce((acc, x) => acc + x.product.price * x.quantity, 0).toFixed(2);
   }
 
   incrementQuantity(product: ProductItem): void {
     product.quantity++;
+    this.basketService.updateProducts(this.toBasketItems(this.products));
   }
 
-  checkout(): void {
-    this.basketService.order(this.backendService.getId()!, this.products).then(() => this.products = []);
+  async checkout(): Promise<void> {
+    await this.basketService.order(this.backendService.getId()!, this.products);
+    this.products = [];
   }
 }
