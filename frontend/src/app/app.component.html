@@ -1,12 +1,12 @@
 <div class="d-flex flex-column min-vh-100">
   <!-- Header -->
   <header class="container d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-    <a [routerLink]="['/shop']" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <a [routerLink]="['/products']" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
       <span class="fs-4">Bakery as a Service</span>
     </a>
     <ul class="nav nav-pills">
       @if (isLoggedIn) {
-        <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/shop']">Shop</a></li>
+        <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/products']">Products</a></li>
         <li class="nav-item">
           <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/cart']">
             <i class="bi bi-cart3"></i>
@@ -21,7 +21,12 @@
               }
           </a>
         </li>
-        <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/login']" (click)="logout()">Logout</a></li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/login']" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+          </a>
+        </li>
       } 
       @if (!isLoggedIn) {
         <li class="nav-item"><a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['/login']">Login</a></li>
