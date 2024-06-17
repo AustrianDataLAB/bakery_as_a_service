@@ -4,6 +4,8 @@ import { BackendService } from './backend.service';
 import { OnInit } from '@angular/core';
 import { BasketService } from './basket.service';
 
+import { environment } from '../environments/environment';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -15,6 +17,8 @@ export class AppComponent implements OnInit {
 
   isLoggedIn: boolean = false;
   productsInBasket: number = 0;
+  apiUrl = environment.API_URL;
+  appName = environment.APP_NAME;
 
   constructor(private backendService: BackendService, private basketService: BasketService) { }
 

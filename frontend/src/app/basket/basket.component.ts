@@ -4,6 +4,8 @@ import { BackendService, Product } from '../backend.service';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
+import { environment } from '../../environments/environment';
+
 export interface ProductItem {
   product: Product;
   quantity: number;
@@ -17,6 +19,7 @@ export interface ProductItem {
   styleUrls: ['./basket.component.scss']
 })
 export class BasketComponent implements OnInit {
+  public apiUrl = environment.API_URL;
   public products: ProductItem[] = [];
 
   constructor(public basketService: BasketService, public backendService: BackendService) {}

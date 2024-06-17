@@ -3,6 +3,8 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 import { BackendService, Product } from '../backend.service';
 import { BasketService } from '../basket.service';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'products-root',
   standalone: true,
@@ -11,6 +13,7 @@ import { BasketService } from '../basket.service';
   styleUrl: './products.component.scss'
 })
 export class ProductsComponent implements OnInit {
+  public apiUrl = environment.API_URL;
   public products: Product[] = [];
 
   constructor(public backendService: BackendService, public basketService: BasketService) {

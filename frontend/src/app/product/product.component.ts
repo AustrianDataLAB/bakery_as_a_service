@@ -4,6 +4,8 @@ import { BackendService, Product } from '../backend.service';
 import { BasketService } from '../basket.service';
 import { FormsModule } from '@angular/forms';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'app-product',
   standalone: true,
@@ -12,6 +14,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './product.component.scss'
 })
 export class ProductComponent implements OnInit {
+  public apiUrl = environment.API_URL;
   product: Product | undefined;
   quantity: number = 1;
 

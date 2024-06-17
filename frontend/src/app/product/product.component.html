@@ -1,7 +1,7 @@
 @if (product) {
     <div class="row align-content-center">
         <div class="col-md-6 mb-4">
-            <img src="http://localhost:8055/assets/{{product.image}}" alt="{{product.name}}" class="img-fluid">
+            <img src="{{apiUrl}}/assets/{{product.image}}" alt="{{product.name}}" class="img-fluid">
         </div>
         <div class="col-md-6">
             <h2>{{product.name}}</h2>
