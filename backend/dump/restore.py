@@ -10,6 +10,17 @@ from baas_dump import url, get_session, DUMP_FILE
 
 s = get_session()
 
+print("== Checking for existing Data")
+res = s.get(url("/collections"))
+if not res.ok:
+    print("Error from directus: ", res.status_code)
+    print(res.text)
+    sys.exit(1)
+
+if len(res.json()["data"]) > 0:
+    print("existing collections were found, exiting")
+    sys.exit(0)
+
 print("== Reading File Dump")
 print("reading", DUMP_FILE)
 
