@@ -10,6 +10,10 @@ on:
 
 env:
   PUSH_IMAGES: ${{ github.ref_protected && (startsWith(github.event.ref, 'refs/tags/v') || startsWith(github.event.ref, 'refs/heads/main') ) }}
+  REGISTRY: ${{ env.USE_GCP && env.GCP_REGISTRY || 'ghcr.io' }}
+  REPOSITORY_NAME: ${{ env.USE_GCP && env.GCP_REPOSITORY_NAME || 'austriandatalab' }}
+  REGISTRY_USER: ${{ env.USE_GCP && env.GCP_REGISTRY_USER || github.actor }}
+  REGISTRY_PASSWORD: ${{ env.USE_GCP && secrets.GOOGLE_REGISTRY_PUSH_CREDENTIALS || secrets.GITHUB_TOKEN }}
   IMAGE_NAME_BACKEND: baas-backend
   IMAGE_NAME_FRONTEND: baas-frontend
   IMAGE_NAME_DOCUMENT: baas-document
@@ -30,7 +34,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ env.REGISTRY_USER }}
-          password: ${{ env.GOOGLE_REGISTRY_PUSH_CREDENTIALS }}
+          password: ${{ env.REGISTRY_PASSWORD }}
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v4
@@ -77,7 +81,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ env.REGISTRY_USER }}
-          password: ${{ env.GOOGLE_REGISTRY_PUSH_CREDENTIALS }}
+          password: ${{ env.REGISTRY_PASSWORD }}
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v4
@@ -124,7 +128,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ env.REGISTRY_USER }}
-          password: ${{ env.GOOGLE_REGISTRY_PUSH_CREDENTIALS }}
+          password: ${{ env.REGISTRY_PASSWORD }}
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v4
@@ -179,4 +183,4 @@ jobs:
         run: .github/workflows/push_helm.sh
         env:
           REGISTRY_USERNAME: ${{ env.REGISTRY_USER }}
-          REGISTRY_ACCESS_TOKEN: ${{ env.GOOGLE_REGISTRY_PUSH_CREDENTIALS }}
+          REGISTRY_ACCESS_TOKEN: ${{ env.REGISTRY_PASSWORD }}
