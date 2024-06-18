@@ -1,4 +1,8 @@
 
+# From rancher app form
+customFqdn: "from.rancher.app.questions"
+customName: "from.rancher.app.questions"
+customEmail: "from.rancher.app.questions"
 
 imagePullSecrets: []
 nameOverride: ""
