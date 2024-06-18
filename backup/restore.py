@@ -4,6 +4,7 @@ import sys
 import json
 import requests
 import copy
+import base64
 
 from baas_dump import url, get_session, DUMP_FILE
 
@@ -80,4 +81,27 @@ for c in data["flows"]:
     c.pop("user_created")
     check(s.patch(url("/flows/" + c["id"]), json=c))
 
+# %% Restore File Uploads
+print("== Restoring Files")
+fileLut = {}
+
+for f in data["files"]:
+    contents = base64.b64decode(f["content"])
+    file = f["name"]
+    print("Uploading", file)
+
+    formdata = {
+        file: (
+            file,
+            contents,
+            f["type"],
+            {"filename_download": file}
+        )
+    }
+    res = check(s.post(url("/files"), files=formdata))
+    fileLut[file] = res.json()["data"]["id"]
+
+
 print("OK")
+
+# %%

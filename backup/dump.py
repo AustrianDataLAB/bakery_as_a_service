@@ -4,6 +4,7 @@ import sys
 from baas_dump import get_session, url, DUMP_FILE
 import json
 import requests
+import base64
 
 s = get_session()
 
@@ -41,6 +42,27 @@ print("== Exporting Operations (for Flows)")
 res = check(s.get(url("/operations")))
 output["operations"] = res["data"] 
 
+# %% Export images
+
+files = []
+print("== Exporting Files")
+res = check(s.get(url("/files")))
+for file in res["data"]:
+    fid = file["id"]
+    name = file["filename_download"]
+
+    print(f"Getting {name}")
+    res = s.get(url(f"/assets/{fid}"))
+    if not res.ok:
+        print(res.text)
+        sys.exit(1)
+
+    files.append({
+        "name": name,
+        "type": file["type"],
+        "content": str(base64.b64encode(res.content), 'utf-8'),
+    })
+output["files"] = files
 
 # %% Save dump
 
@@ -50,3 +72,5 @@ with open(DUMP_FILE, 'w') as fd:
     json.dump(output, fd, indent=2)
 
 print("OK")
+
+# %%
