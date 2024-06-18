@@ -50,8 +50,8 @@ services:
     ports:
       - 8055:8055
     volumes:
-      - ./volume/backend/uploads/:/directus/uploads/
-      - ./volume/backend/extensions/:/directus/extensions/
+      - directus_uploads:/directus/uploads/
+      - directus_extensions:/directus/extensions/
     environment:
       KEY: "replace-with-random-value"
       SECRET: "replace-with-random-value"
@@ -102,3 +102,17 @@ services:
 
 networks:
   baas_network:
+
+volumes:
+  directus_uploads:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./volume/backend/uploads/
+  directus_extensions:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./volume/backend/extensions/

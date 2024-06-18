@@ -44,12 +44,14 @@ output["operations"] = res["data"]
 
 # %% Export images
 
+oldFileIdLut = {}
 files = []
 print("== Exporting Files")
 res = check(s.get(url("/files")))
 for file in res["data"]:
     fid = file["id"]
     name = file["filename_download"]
+    oldFileIdLut[fid] = name
 
     print(f"Getting {name}")
     res = s.get(url(f"/assets/{fid}"))
@@ -63,6 +65,28 @@ for file in res["data"]:
         "content": str(base64.b64encode(res.content), 'utf-8'),
     })
 output["files"] = files
+
+# %% Export Products
+
+def replace_image_product(prod):
+    # replace image id with filename
+    prod["image"] = oldFileIdLut[prod["image"]]
+    return prod
+
+handler = {
+    "Products": replace_image_product
+}
+
+output["items"] = {}
+
+print("== Export Items")
+for collection in collections:
+    name = collection["collection"]
+    print("Getting", name)
+    res = check(s.get(url(f"/items/{name}")))
+    collection_content = list(map(handler.get(name, lambda x: x), res["data"]))
+    output["items"][name] = collection_content
+
 
 # %% Save dump
 

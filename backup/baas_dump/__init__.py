@@ -7,7 +7,7 @@ import urllib.parse
 import requests
 import requests.cookies
 
-ADMIN_USER = os.getenv("ADMIN_USER", "admin@example.com")
+ADMIN_USER = os.getenv("ADMIN_EMAIL", "admin@example.com")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin")
 BASE_URL = os.getenv("BASE_URL", "http://localhost:8055")
 DUMP_FILE = os.getenv("DUMP_FILE", "directus_dump.json")

@@ -101,6 +101,25 @@ for f in data["files"]:
     res = check(s.post(url("/files"), files=formdata))
     fileLut[file] = res.json()["data"]["id"]
 
+# %% Restore Items
+print("== Restoring Items")
+
+def replace_image_product(prod):
+    # replace filename with image upload id
+    prod["image"] = fileLut[prod["image"]]
+    return prod
+
+handler = {
+    "Products": replace_image_product
+}
+
+for collection, contents in data["items"].items():
+    # Replace file name with upload id
+    h = handler.get(collection, lambda x: x)
+
+    for c in contents:
+        c = h(c)
+        res = check(s.post(url(f"/items/{collection}"), json=c))
 
 print("OK")
 
