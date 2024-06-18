@@ -1,0 +1,18 @@
+apiVersion: v1
+entries:
+  baas:
+  - annotations:
+      catalog.cattle.io/display-name: Bakery as a service
+      catalog.cattle.io/requests-cpu: 1000m
+      catalog.cattle.io/requests-memory: 2Gi
+    apiVersion: v2
+    appVersion: 0.3.1
+    created: "2024-06-19T00:20:19.106147+02:00"
+    description: Helm chart to deploy a Bakery-as-a-service (BaaS) instance
+    digest: 4f7a11d33bff795989c6469dcb92f6d248c4bdb8ed286868b5094296d2c796af
+    name: baas
+    type: application
+    urls:
+    - baas-0.3.1.tgz
+    version: 0.3.1
+generated: "2024-06-19T00:20:19.104953+02:00"
