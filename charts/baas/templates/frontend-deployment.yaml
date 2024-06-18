@@ -38,3 +38,10 @@ spec:
             memory: {{ .Values.frontend.resources.requests.memory }}
       restartPolicy: {{ .Values.frontend.restartPolicy }}
       terminationGracePeriodSeconds: {{ .Values.frontend.terminationGracePeriodSeconds }}
+      env:
+        - name: CUSTOM_FQDN
+          value: "{{ .Values.customFqdn }}"
+        - name: CUSTOM_NAME
+          value: "{{ .Values.customName }}"
+        - name: CUSTOM_EMAIL
+          value: "{{ .Values.customEmail }}"

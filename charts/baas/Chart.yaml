@@ -1,6 +1,6 @@
 apiVersion: v2
 name: baas
-description: A Helm chart for deploying baas
+description: Helm chart to deploy a Bakery-as-a-service (BaaS) instance 
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -22,3 +22,8 @@ version: 0.3.1
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "0.3.1"
+
+annotations:
+  catalog.cattle.io/display-name: "Bakery as a service"
+  catalog.cattle.io/requests-cpu: 1000m
+  catalog.cattle.io/requests-memory: 2Gi
