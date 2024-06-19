@@ -1,5 +1,40 @@
 version: "3"
 services:
+  grafana-generator:
+    container_name: grafana-generator
+    build: 
+      context: ./grafana-generator
+    image: grafana-generator
+    ports: 
+      - '9999:8080'
+    healthcheck:
+      test: wget 127.0.0.1:8080 --no-verbose --tries=1 --spider || exit 1
+      interval: 5s
+      retries: 10
+      start_period: 10s
+      timeout: 5s
+    networks:
+      - baas_network
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - ./volume/grafana:/var/lib/grafana
+    ports:
+     - '3000:3000'
+    networks:
+      - baas_network
+  prometheus:
+    image: prom/prometheus:v2.21.0
+    ports:
+      - '9000:9090'
+    volumes:
+      - ./volume/prometheus-config:/etc/prometheus
+      - ./volume/prometheus-data:/prometheus
+    command: --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
+    networks:
+      - baas_network
   frontend:
     container_name: frontend
     build: 
@@ -104,3 +139,4 @@ services:
 
 networks:
   baas_network:
+    driver: bridge
