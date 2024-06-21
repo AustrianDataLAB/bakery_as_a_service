@@ -16,7 +16,7 @@ jobs:
     - name: Go to playwright project
       run: cd playwright-tests
     - name: Install dependencies
-      run: npm ci
+      run: npm i
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
