@@ -19,6 +19,8 @@ jobs:
     - name: Install Playwright Browsers
       working-directory: ./playwright-tests
       run: npx playwright install --with-deps
+    - name: Start application locally
+      run: docker compose run -d
     - name: Run Playwright tests
       working-directory: ./playwright-tests
       run: npm run test:local
