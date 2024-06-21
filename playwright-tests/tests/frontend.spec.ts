@@ -3,8 +3,11 @@ import { test, expect } from '@playwright/test';
 const USERNAME = process.env.FRONTEND_USERNAME;
 const PASSWORD = process.env.FRONTEND_PASSWORD;
 
-test.beforeEach(async ({ page }) => {
+test.beforeAll(async() => {
   console.log(`Running test in environement ${process.env.ENV}`);
+});
+
+test.beforeEach(async ({ page }) => {
   await page.goto('/');
 });
 
