@@ -13,13 +13,14 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - name: Go to playwright project
-      run: cd playwright-tests
     - name: Install dependencies
+      working-directory: ./playwright-tests
       run: npm i
     - name: Install Playwright Browsers
+      working-directory: ./playwright-tests
       run: npx playwright install --with-deps
     - name: Run Playwright tests
+      working-directory: ./playwright-tests
       run: npm run test:local
     - uses: actions/upload-artifact@v4
       if: always()
