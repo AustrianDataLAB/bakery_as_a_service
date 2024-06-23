@@ -1,31 +1,21 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: Pod
 metadata:
   name: baas-backend-init-demo
 spec:
-  progressDeadlineSeconds: 60
-  replicas: 1
-  selector:
-    matchLabels:
-      servicename: baas-backend-init-demo
-  template:
-    metadata:
-      labels:
-        servicename: baas-backend-init-demo
-    spec:
-      containers:
-      - env:
-        - name: ADMIN_EMAIL
-          value: "{{ .Values.customEmail }}"
-        - name: ADMIN_PASSWORD
-          value: "{{ .Values.customPassword }}"
-        - name: BASE_URL
-          value: "http://baas-backend:8055"
-        name: baas-backend-init-demo
-        image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
-        imagePullPolicy: IfNotPresent
-        command: 
-          - "/bin/sh"
-        args: [ "-c", "cd /opt/dump_restore && python3 restore.py"]
-      restartPolicy: OnFailure
-      terminationGracePeriodSeconds: 30
+  containers:
+  - env:
+    - name: ADMIN_EMAIL
+      value: "{{ .Values.customEmail }}"
+    - name: ADMIN_PASSWORD
+      value: "{{ .Values.customPassword }}"
+    - name: BASE_URL
+      value: "http://baas-backend:8055"
+    name: baas-backend-init-demo
+    image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
+    imagePullPolicy: IfNotPresent
+    command: 
+      - "/bin/sh"
+    args: [ "-c", "cd /opt/dump_restore && python3 restore.py"]
+  restartPolicy: OnFailure
+  terminationGracePeriodSeconds: 30
