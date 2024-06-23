@@ -52,7 +52,16 @@ spec:
           value: "6379"
         - name: REDIS_PASSWORD
           value: "replace-with-random-value"
-
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /admin
+            port: 8055
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 5
         resources:
           limits:
             cpu: "500m"
@@ -60,24 +69,14 @@ spec:
           requests:
             cpu: "50m"
             memory: 64Mi
-
-      - name: baas-backend-init-demo
-        image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: ADMIN_EMAIL
-          value: "{{ .Values.customEmail }}"
-        - name: ADMIN_PASSWORD
-          value: "{{ .Values.customPassword }}"
-        - name: BASE_URL
-          value: "http://baas-backend:8055"
-        command: 
-          - "/bin/sh"
-        args: [ "-c", "cd /opt/dump_restore && python3 restore.py"]
+        volumeMounts:
+        - mountPath: /directus/
+          name: baas-backend-data
 
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
-      #volumes:
-      #- name: baas-backend
-      #  persistentVolumeClaim:
-      #    claimName: baas-backend
+
+      volumes:
+      - name: baas-backend-data
+        persistentVolumeClaim:
+          claimName: baas-backend-data
