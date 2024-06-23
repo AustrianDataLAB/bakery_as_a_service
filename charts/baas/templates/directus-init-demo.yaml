@@ -5,6 +5,13 @@ metadata:
 spec:
   progressDeadlineSeconds: 60
   replicas: 1
+  selector:
+    matchLabels:
+      servicename: baas-backend-init-demo
+  template:
+    metadata:
+      labels:
+        servicename: baas-backend-init-demo
   template:
     spec:
       containers:
