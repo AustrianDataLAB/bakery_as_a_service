@@ -44,7 +44,7 @@ spec:
         - name: WEBSOCKETS_ENABLED
           value: "true"
         - name: REDIS_ENABLED
-          value: "1"
+          value: "0" # TODO ENABLE again after REDIS_HOST is corrected
         - name: REDIS_HOST
           value: "valkey-master.default.svc.cluster.local"
         - name: REDIS_PORT
