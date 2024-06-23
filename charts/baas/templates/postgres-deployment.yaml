@@ -8,8 +8,6 @@ spec:
   selector:
     matchLabels:
       servicename: service-baas-backend-db
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:

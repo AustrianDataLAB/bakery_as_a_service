@@ -8,8 +8,6 @@ spec:
   selector:
     matchLabels:
       servicename: baas-document
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:

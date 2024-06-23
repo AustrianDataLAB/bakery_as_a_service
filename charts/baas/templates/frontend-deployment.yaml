@@ -8,8 +8,6 @@ spec:
   selector:
     matchLabels:
       servicename: baas-frontend
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -38,10 +36,11 @@ spec:
             memory: 64Mi
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
-      env:
-        - name: CUSTOM_FQDN
-          value: "{{ .Values.customFqdn }}"
-        - name: CUSTOM_NAME
-          value: "{{ .Values.customName }}"
-        - name: CUSTOM_EMAIL
-          value: "{{ .Values.customEmail }}"
+      volumeMounts:
+        - name: frontend-config-js
+          mountPath: /usr/share/nginx/html/config.js
+          subPath: config.js
+    volumes:
+    - name: frontend-config-js
+      configMap:
+        name: frontend-customer-config
