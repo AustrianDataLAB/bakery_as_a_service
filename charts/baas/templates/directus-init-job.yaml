@@ -8,7 +8,7 @@ spec:
       containers:
       - name: baas-backend-init-demo
         image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
-        command: [ "sh" "-c", "cd /opt/dump_restore && python3 restore.py"]
+        command: [ "sh", "-c", "cd /opt/dump_restore && python3 restore.py"]
         env:
         - name: ADMIN_EMAIL
           value: "{{ .Values.customEmail }}"
