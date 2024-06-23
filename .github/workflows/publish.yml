@@ -12,10 +12,10 @@ env:
   # build on tags/main and pull_requests
   # the GCP repository is only exposed for protected branches, i.e. main
   PUSH_IMAGES: ${{ startsWith(github.event.ref, 'refs/tags/v') || startsWith(github.event.ref, 'refs/heads/main') }}
-  REGISTRY: ${{ env.USE_GCP && env.GCP_REGISTRY || 'ghcr.io' }}
-  REPOSITORY_NAME: ${{ env.USE_GCP && env.GCP_REPOSITORY_NAME || 'austriandatalab' }}
-  REGISTRY_USER: ${{ env.USE_GCP && env.GCP_REGISTRY_USER || github.actor }}
-  REGISTRY_PASSWORD: ${{ env.USE_GCP && secrets.GOOGLE_REGISTRY_PUSH_CREDENTIALS || secrets.GITHUB_TOKEN }}
+  REGISTRY: ${{ vars.USE_GCP && vars.GCP_REGISTRY || 'ghcr.io' }}
+  REPOSITORY_NAME: ${{ vars.USE_GCP && vars.GCP_REPOSITORY_NAME || 'austriandatalab' }}
+  REGISTRY_USER: ${{ vars.USE_GCP && vars.GCP_REGISTRY_USER || github.actor }}
+  REGISTRY_PASSWORD: ${{ vars.USE_GCP && secrets.GOOGLE_REGISTRY_PUSH_CREDENTIALS || secrets.GITHUB_TOKEN }}
   IMAGE_NAME_BACKEND: baas-backend
   IMAGE_NAME_FRONTEND: baas-frontend
   IMAGE_NAME_DOCUMENT: baas-document
