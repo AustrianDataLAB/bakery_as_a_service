@@ -15,19 +15,13 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.3.2
+version: 0.5.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "0.3.2"
-
-dependencies:
-  - name: "valkey"
-    version: "~0.3.5"
-    repository: "https://charts.bitnami.com/bitnami"
-    condition: valkey.enable
+appVersion: "0.5.0"
 
 annotations:
   catalog.cattle.io/display-name: "Bakery as a service"

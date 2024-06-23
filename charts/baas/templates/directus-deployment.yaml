@@ -1,24 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.directus.name }}
+  name: baas-backend
 spec:
   progressDeadlineSeconds: 60
-  replicas: {{ .Values.directus.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      servicename: {{ .Values.directus.name }}
-  strategy:
-    type: Recreate
+      servicename: baas-backend
   template:
     metadata:
       labels:
-        servicename: {{ .Values.directus.name }}
+        servicename: baas-backend
     spec:
       containers:
-      - env:
-        - name: CUSTOM_FQDN
-          value: "{{ .Values.customFqdn }}"
+      - name: baas-backend
+        image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
+        imagePullPolicy: IfNotPresent
+        env:
         - name: CUSTOM_NAME
           value: "{{ .Values.customName }}"
         - name: CUSTOM_EMAIL
@@ -28,41 +27,36 @@ spec:
         - name: SECRET
           value: "{{ .Values.directus.secret }}"
         - name: ADMIN_EMAIL
-          value: "{{ .Values.directus.admin.email }}"
+          value: "{{ .Values.customEmail }}"
         - name: ADMIN_PASSWORD
-          value: "{{ .Values.directus.admin.password }}"
+          value: "{{ .Values.customPassword }}"
         - name: DB_CLIENT
-          value: "{{ .Values.directus.client }}"
+          value: "pg"
         - name: DB_HOST
-          value: "{{ .Values.postgres.service.name }}"
+          value: "service-baas-backend-db"
         - name: DB_PORT
-          value: "{{ .Values.postgres.service.port }}"
+          value: "5432"
         - name: DB_DATABASE
-          value: "{{ .Values.postgres.database }}"
+          value: "directus"
         - name: DB_USER
-          value: "{{ .Values.postgres.user.name }}"
+          value: "postgres"
         - name: DB_PASSWORD
-          value: "{{ .Values.postgres.user.password }}"
+          value: "postgres"
         - name: WEBSOCKETS_ENABLED
-          value: "{{ .Values.directus.websockets }}"
-        {{- if .Values.valkey.enable }}
+          value: "true"
         - name: REDIS_ENABLED
-          value: "1"
+          value: "0" # TODO ENABLE again after REDIS_HOST is corrected
         - name: REDIS_HOST
           value: "valkey-master.default.svc.cluster.local"
         - name: REDIS_PORT
-          value: "{{ .Values.valkey.master.containerPorts.valkey }}"
+          value: "6379"
         - name: REDIS_PASSWORD
-          value: "{{ .Values.valkey.auth.password }}"
-        {{- end }}
-        name: {{ .Values.directus.name }}
-        image: {{ .Values.directus.image.repository }}:{{ .Values.directus.image.tag }}
-        imagePullPolicy: {{ .Values.directus.image.pullPolicy }}
+          value: "replace-with-random-value"
         livenessProbe:
           failureThreshold: 3
           httpGet:
-            path: /server/health
-            port: {{ .Values.directus.service.port }}
+            path: /admin
+            port: 8055
             scheme: HTTP
           initialDelaySeconds: 10
           periodSeconds: 5
@@ -70,17 +64,19 @@ spec:
           timeoutSeconds: 5
         resources:
           limits:
-            cpu: "{{ .Values.directus.resources.limits.cpu }}"
-            memory: {{ .Values.directus.resources.limits.memory }}
+            cpu: "500m"
+            memory: 512Mi
           requests:
-            cpu: "{{ .Values.directus.resources.requests.cpu }}"
-            memory: {{ .Values.directus.resources.requests.memory }}
-        #volumeMounts:
-        #- mountPath: /pv
-        #  name: baas-backend
-      restartPolicy: {{ .Values.directus.restartPolicy }}
-      terminationGracePeriodSeconds: {{ .Values.directus.terminationGracePeriodSeconds }}
-      #volumes:
-      #- name: baas-backend
-      #  persistentVolumeClaim:
-      #    claimName: baas-backend
+            cpu: "50m"
+            memory: 64Mi
+        # volumeMounts:
+        # - mountPath: /directus/
+        #   name: baas-backend-data
+
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+      # volumes:
+      # - name: baas-backend-data
+      #   persistentVolumeClaim:
+      #     claimName: baas-backend-data

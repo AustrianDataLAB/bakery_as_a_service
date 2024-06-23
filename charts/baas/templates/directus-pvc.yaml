@@ -1,8 +1,7 @@
-# Volume for postgres
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: baas-backend-db
+  name: baas-backend-data
 spec:
   accessModes:
     - ReadWriteOnce

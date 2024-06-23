@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.postgres.service.name }}
+  name: service-baas-backend-db
 spec:
-  type: {{ .Values.postgres.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.postgres.service.port }} # exposed port reachable by other pods
-      targetPort: {{ .Values.postgres.service.port }} # port inside container
+    - port: 5432 # exposed port reachable by other pods
+      targetPort: 5432 # port inside container
       protocol: TCP
       name: db-port
   selector:
-    servicename: {{ .Values.postgres.name }} # Select member-pods of this service
+    servicename: baas-backend-db # Select member-pods of this service
