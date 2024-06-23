@@ -18,7 +18,8 @@ spec:
         name: baas-backend-init-demo
         image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
         imagePullPolicy: IfNotPresent
-        command: "/bin/sh"
+        command: 
+          - "/bin/sh"
         args: [ "-c", "cd /opt/dump_restore && python3 restore.py"]
       restartPolicy: OnFailure
       terminationGracePeriodSeconds: 30
