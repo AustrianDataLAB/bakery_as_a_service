@@ -26,6 +26,7 @@ def get_session() -> requests.Session:
         sys.exit(1)
 
     token = auth_response.json()["data"]["access_token"]
+    print("authentication successful: ", token)
 
     session = requests.Session()
     session.cookies.set("directus_session_token", token)

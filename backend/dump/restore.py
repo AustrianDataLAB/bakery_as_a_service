@@ -17,8 +17,11 @@ if not res.ok:
     print(res.text)
     sys.exit(1)
 
-if len(res.json()["data"]) > 0:
+# Idempotency; check whether Customer collection exists
+res = s.get(url("/collections/Customer"))
+if res.ok:
     print("existing collections were found, exiting")
+    print(res.json())
     sys.exit(0)
 
 print("== Reading File Dump")
