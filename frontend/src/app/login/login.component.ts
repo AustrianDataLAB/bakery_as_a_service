@@ -55,7 +55,7 @@ export class LoginComponent {
         const data = await this.backendService.login(this.loginForm.value.email!, this.loginForm.value.password!);
         console.log(data);
         localStorage.setItem('user', JSON.stringify(data));
-        this.router.navigateByUrl('/shop')
+        this.router.navigateByUrl('/products')
       }
       catch (error) {
         // converting the error of type unknown to ErrorResponse in order to access the error message

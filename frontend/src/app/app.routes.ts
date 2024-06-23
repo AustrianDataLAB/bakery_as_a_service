@@ -1,9 +1,11 @@
 import { Routes, Router, CanActivateFn } from '@angular/router';
 import { LoginComponent } from './login/login.component';
-import { ProductsComponent } from './products.component';
+import { ProductsComponent } from './products/products.component';
 import { BasketComponent } from './basket/basket.component';
 import { BackendService } from './backend.service';
 import { inject } from '@angular/core';
+import { ProductComponent } from './product/product.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 export const canActivate: CanActivateFn = () => {
     const backendService = inject(BackendService);
@@ -19,6 +21,8 @@ export const canActivate: CanActivateFn = () => {
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
-    { path: 'shop', component: ProductsComponent, canActivate: [canActivate]},
-    { path: 'cart', component: BasketComponent, canActivate: [canActivate]}
+    { path: 'products', component: ProductsComponent, canActivate: [canActivate] },
+    { path: 'product/:id', component: ProductComponent, canActivate: [canActivate] },
+    { path: 'cart', component: BasketComponent, canActivate: [canActivate] },
+    { path: '**', component: PageNotFoundComponent }
 ];

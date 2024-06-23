@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { createDirectus, rest, authentication, readItems, readItem, createItem, createItems } from '@directus/sdk';
 import { BehaviorSubject } from 'rxjs';
 
+import { environment } from '../environments/environment';
+
 export interface Product {
   id: string;
   name: string;
@@ -36,7 +38,7 @@ interface Schema {
   providedIn: 'root'
 })
 export class BackendService {
-  client = createDirectus<Schema>('http://localhost:8055') //TODO: read from env
+  client = createDirectus<Schema>(environment.API_URL) //TODO: read from env
     .with(rest())
     .with(authentication());
 

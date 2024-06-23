@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BackendService, Order, OrderItem, Product } from './backend.service';
 import { ProductItem } from './basket/basket.component';
+import { BehaviorSubject } from 'rxjs';
 
 export interface BasketItem {
   id: string;
@@ -11,49 +12,48 @@ export interface BasketItem {
   providedIn: 'root',
 })
 export class BasketService {
+  private basketItemsSource = new BehaviorSubject<BasketItem[]>(this.loadFromLocalStorage());
+  public basketItems$ = this.basketItemsSource.asObservable();
+
   constructor(public backendService: BackendService) {
-
+    this.basketItemsSource.next(this.loadFromLocalStorage());
   }
 
-  getAll(): BasketItem[] {
+  loadFromLocalStorage(): BasketItem[] {
     const item = localStorage.getItem("products");
-
-    return item ? JSON.parse(item) : [];
+    return item ? JSON.parse(item) as BasketItem[] : [];
   }
 
-  replaceAll(value: Product[]): void {
-    localStorage.setItem("products", JSON.stringify(value.map((x) => x.id)));
+  dumpToLocalStorage(): void {
+    localStorage.setItem("products", JSON.stringify(this.basketItemsSource.getValue()));
   }
 
-  replaceAllStrings(value: BasketItem[]): void {
-    localStorage.setItem("products", JSON.stringify(value));
+  updateProducts(value: BasketItem[]): void {
+    this.basketItemsSource.next(value);
+    this.dumpToLocalStorage();
   }
 
   addProduct(value: string, quantity: number): void {
-    var products = this.getAll();
-    products.push({ id: value, quantity: quantity });
-    products = this.summarise(products);
-    this.replaceAllStrings(products);
+    var products = this.basketItemsSource.getValue();
+    const existingProductIndex = products.findIndex(product => product.id === value);
+    if (existingProductIndex !== -1) {
+      products[existingProductIndex].quantity += quantity;
+    } else {
+      products.push({ id: value, quantity: quantity });
+    }
+    this.updateProducts(products);
   }
 
   removeProduct(value: string): void {
-    const item = localStorage.getItem("products");
-    var products: BasketItem[] = JSON.parse(item!);
-
-    var index = -1;
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id == value) {
-        index = i;
-        break;
-      }
+    var products = this.basketItemsSource.getValue();
+    var index = products.findIndex(product => product.id === value);
+    if (index !== -1) {
+      products.splice(index, 1);
+      this.updateProducts(products);
     }
-
-    products.splice(index, 1);
-
-    localStorage.setItem("products", JSON.stringify(products));
   }
 
-  order(customer_id: string, products: ProductItem[]): Promise<void> {
+  async order(customer_id: string, products: ProductItem[]): Promise<void> {
     var items: any[] = [];
 
     products.forEach((x) => {
@@ -74,25 +74,23 @@ export class BasketService {
       date_created: undefined,
     };
 
-    return this.backendService.createOrder(order)
-      .then((order) => {
-        console.log(order)
-        this.backendService.createOrderItems(items.map((x) => {
-          return { order_id: order.id!, ...x };
-        })).then((_items) => {
-          this.clearAll();
-        });
-      });
+    const order_2 = await this.backendService.createOrder(order);
+    console.log(order_2);
+    this.backendService.createOrderItems(items.map((x_1) => {
+      return { order_id: order_2.id!, ...x_1 };
+    })).then((_items) => {
+      this.clearAll();
+    });
   }
 
   clearAll(): void {
-    this.replaceAll([]);
+    this.updateProducts([]);
   }
 
   /**
    * if multiple products of the same kind have been added to the basket then sum the quantities
    */
-  summarise(products: BasketItem[]): BasketItem[] {
+  summarize(products: BasketItem[]): BasketItem[] {
     let hash: Map<string, number> = new Map();
 
     products.forEach((product) => {

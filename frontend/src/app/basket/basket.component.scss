@@ -1,5 +1,10 @@
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+.product-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover; /* Crop and fit the image */
+    border-radius: 10%;
 }
+
+#quantity-col {
+    max-width: 100px;
+  }

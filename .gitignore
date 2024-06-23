@@ -1,2 +1,4 @@
 /volume/*
 !/volume/.empty
+
+.idea

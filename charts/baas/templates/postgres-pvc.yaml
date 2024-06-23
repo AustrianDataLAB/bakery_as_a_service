@@ -2,12 +2,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.postgres.name }}
+  name: baas-backend-db
 spec:
   accessModes:
-  {{- range .Values.postgres.accessModes }}
-  - {{ . }}
-  {{- end }}
+    - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.postgres.storage }}
+      storage: 4Gi
