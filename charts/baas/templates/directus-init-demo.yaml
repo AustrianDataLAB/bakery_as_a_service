@@ -12,7 +12,6 @@ spec:
     metadata:
       labels:
         servicename: baas-backend-init-demo
-  template:
     spec:
       containers:
       - env:
