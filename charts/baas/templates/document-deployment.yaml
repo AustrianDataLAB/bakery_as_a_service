@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: baas-document
-        image: ghcr.io/austriandatalab/baas-document:main
+        image: ghcr.io/austriandatalab/baas-document:{{ .Values.imageTag }}
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3

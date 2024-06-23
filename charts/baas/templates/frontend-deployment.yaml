@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: baas-frontend
-        image: ghcr.io/austriandatalab/baas-frontend:main
+        image: ghcr.io/austriandatalab/baas-frontend:{{ .Values.imageTag }}
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3

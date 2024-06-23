@@ -50,7 +50,7 @@ spec:
         - name: REDIS_PASSWORD
           value: "replace-with-random-value"
         name: baas-backend
-        image: directus/directus:10.10.5
+        image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
