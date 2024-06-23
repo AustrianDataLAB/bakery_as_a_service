@@ -5,6 +5,6 @@ metadata:
 data: 
   # Usage in Frontend: Add <script src="/assets/config.js"></script>, then use: window.customerDomain
   config.js: |
-    customerDomain="{{ .Values.customDomain }}";
+    customerDomain="//{{ .Values.customSubdomain }}.{{ .Values.clusterDomain }}";
     customerName="{{ .Values.customName }}";
     customerEmail="{{ .Values.customEmail }}";
