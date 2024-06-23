@@ -1400,12 +1400,18 @@
       "color": null,
       "description": null,
       "status": "active",
-      "trigger": "webhook",
+      "trigger": "event",
       "accountability": "all",
       "options": {
-        "method": "POST"
+        "type": "action",
+        "scope": [
+          "items.update"
+        ],
+        "collections": [
+          "Orders"
+        ]
       },
-      "operation": "c20639ab-7442-46bc-bdf2-f9a28e6ab60e",
+      "operation": "f2189914-96c0-4c5d-9cbc-e974b17bbfd2",
       "date_created": "2024-06-20T11:50:17.100Z",
       "user_created": "f665a758-29c1-40f3-8cbd-7662d66fb5de",
       "operations": [
@@ -1417,6 +1423,7 @@
         "aec8d9ec-3981-4670-ac41-162af3698a8a",
         "c20639ab-7442-46bc-bdf2-f9a28e6ab60e",
         "c2432aaf-6db2-4db1-99f0-76f0181f5ce6",
+        "f2189914-96c0-4c5d-9cbc-e974b17bbfd2",
         "f87cb624-cbe4-4391-8333-9bf3af5a0906"
       ]
     }
@@ -1628,7 +1635,7 @@
       "options": {
         "collection": "Invoices",
         "payload": {
-          "id": "{{$trigger.body.orderId}}",
+          "id": "{{$trigger.keys[0]}}",
           "document": "{{document_service_response.data}}"
         }
       },
@@ -1702,13 +1709,13 @@
       "name": "Get Order",
       "key": "read_order",
       "type": "item-read",
-      "position_x": 19,
+      "position_x": 37,
       "position_y": 1,
       "options": {
         "query": {
           "filter": {
             "id": {
-              "_eq": "{{$trigger.body.orderId}}"
+              "_eq": "{{$trigger.keys[0]}}"
             }
           }
         },
@@ -1726,13 +1733,13 @@
       "name": "Read Order Items",
       "key": "item_read_buebu",
       "type": "item-read",
-      "position_x": 37,
+      "position_x": 55,
       "position_y": 1,
       "options": {
         "query": {
           "filter": {
             "order_id": {
-              "_eq": "{{$trigger.body.orderId }}"
+              "_eq": "{{$trigger.keys[0] }}"
             }
           }
         },
@@ -1758,8 +1765,24 @@
       "resolve": "ada00cb3-a713-43b9-88af-328ba095dd1b",
       "reject": null,
       "flow": "00526ceb-f4f6-4262-8846-6ee20df1b76e",
-      "date_created": "2024-06-13T16:05:30.502Z",
-      "user_created": "f665a758-29c1-40f3-8cbd-7662d66fb5de"
+      "date_created": "2024-06-23T14:23:33.857Z",
+      "user_created": "2b80103b-32cb-4ca6-909e-d31d2145bda7"
+    },
+    {
+      "id": "f2189914-96c0-4c5d-9cbc-e974b17bbfd2",
+      "name": "check ordered",
+      "key": "check_ordered",
+      "type": "exec",
+      "position_x": 19,
+      "position_y": 1,
+      "options": {
+        "code": "module.exports = async function(data) {\n\tconsole.log(data);\n    \n    const payload = data[\"$trigger\"].payload;\n    \n    if (!(`status` in payload)) {\n        throw new Error('Status not set');\n    }\n    if (payload.status != 'ordered') {\n        throw new Error('Status not `ordered`');\n    }\n    \n\treturn data;\n}"
+      },
+      "resolve": "c20639ab-7442-46bc-bdf2-f9a28e6ab60e",
+      "reject": null,
+      "flow": "ae749fa6-501a-401c-97d4-1e821414e551",
+      "date_created": "2024-06-23T14:52:06.375Z",
+      "user_created": "2b80103b-32cb-4ca6-909e-d31d2145bda7"
     },
     {
       "id": "f87cb624-cbe4-4391-8333-9bf3af5a0906",
