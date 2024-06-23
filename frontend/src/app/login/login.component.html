@@ -1,12 +1,45 @@
-<div class="login-card">
-    <div class="card-title">
-        <h1>Login</h1>
-        <!-- <span>You don't have an account? <a routerLink="/signup">Sign up</a></span> -->
+<div class="container mt-2">
+    <div class="row justify-content-center align-items-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body py-md-0 ps-md-0">
+            <div class="row">
+              <div class="col-md-6 d-none d-md-block pe-1">
+                <img src="assets/login-image.jpg" alt="Login" class="img-fluid rounded-start-1">
+              </div>
+              <div class="col-md-6 d-flex flex-column justify-content-center">
+                <!-- potential alerts -->
+                <app-alert></app-alert>
+                <h2 class="card-title text-center mb-4">Login</h2>
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                  <div class="mb-3">
+                    <input type="email" formControlName="email" class="form-control" placeholder="Email" [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+                    <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="invalid-feedback d-block">
+                      <div *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</div>
+                      <div *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email address.</div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <input type="password" formControlName="password" class="form-control" placeholder="Password" [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+                    <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="invalid-feedback d-block">
+                      <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
+                      <!-- Add more error messages as needed -->
+                    </div>
+                  </div>
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+                        <span *ngIf="!isLoading">Submit</span>
+                        <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      </button>
+                  </div>
+                </form>
+                <div class="mt-3 text-center">
+                  <span>You don't have an account? <a routerLink="/signup">Sign up</a></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <form class="form-group" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <input name="email" type="email" formControlName="email" placeholder="Email">
-        <input type="password" formControlName="password" placeholder="Password">
-        <button>Submit</button>
-    </form>
-
-</div>
+  </div>

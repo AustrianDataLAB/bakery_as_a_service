@@ -1,4 +1,22 @@
-version: "3"
+version: '3.4'
+
+x-backend-variables: &backend-variables
+  KEY: "replace-with-random-value"
+  SECRET: "replace-with-random-value"
+  ADMIN_EMAIL: "admin@example.com"
+  ADMIN_PASSWORD: "admin"
+  DB_CLIENT: "pg"
+  DB_HOST: "backend-db"
+  DB_PORT: 5432
+  DB_DATABASE: "directus"
+  DB_USER: "postgres"
+  DB_PASSWORD: "postgres"
+  WEBSOCKETS_ENABLED: "true"
+  DB_POOL__MIN: 1
+  DB_POOL__IDLE_TIMEOUT_MILLIS: 3000
+  CORS_ENABLED: "true"
+  CORS_ORIGIN: "true"
+
 services:
   frontend:
     container_name: frontend
@@ -32,9 +50,6 @@ services:
       retries: 10
       start_period: 10s
       timeout: 5s
-    depends_on:
-      backend:
-        condition: service_healthy
     networks:
       - baas_network
 
@@ -44,6 +59,9 @@ services:
       dockerfile: ./Dockerfile.test
     networks:
       - baas_network
+    depends_on:
+      frontend:
+        condition: service_healthy
 
   backend:
     container_name: backend
@@ -52,32 +70,35 @@ services:
     ports:
       - 8055:8055
     volumes:
-      - ./volume/backend/uploads/:/directus/uploads/
-      - ./volume/backend/extensions/:/directus/extensions/
+      - directus_uploads:/directus/uploads/
+      - directus_extensions:/directus/extensions/
     environment:
-      KEY: "replace-with-random-value"
-      SECRET: "replace-with-random-value"
-      ADMIN_EMAIL: "admin@example.com"
-      ADMIN_PASSWORD: "admin"
-      DB_CLIENT: "pg"
-      DB_HOST: "backend-db"
-      DB_PORT: 5432
-      DB_DATABASE: "directus"
-      DB_USER: "postgres"
-      DB_PASSWORD: "postgres"
-      WEBSOCKETS_ENABLED: "true"
-      DB_POOL__MIN: 1
-      DB_POOL__IDLE_TIMEOUT_MILLIS: 3000
-      CORS_ENABLED: "true"
-      CORS_ORIGIN: "true"
+      <<: *backend-variables
     healthcheck:
       test: wget 127.0.0.1:8055/admin --no-verbose --tries=1 --spider || exit 1
       interval: 5s
-      retries: 5
+      retries: 10
       start_period: 10s
       timeout: 5s
     depends_on:
       backend-db:
+        condition: service_healthy
+      document:
+        condition: service_healthy
+    networks:
+      - baas_network
+
+  backend-init-demo:
+    container_name: backend-init-demo
+    build:
+      context: ./backend
+    environment:
+      <<: *backend-variables
+      BASE_URL: "http://backend:8055"
+    restart: "no"
+    entrypoint: [ "sh", "-c", "cd /opt/dump_restore && python3 restore.py"]
+    depends_on:
+      backend:
         condition: service_healthy
     networks:
       - baas_network
@@ -98,8 +119,6 @@ services:
     ports:
       - 5432:5432
     volumes:
-
-      - ./workflowdump.sql:/docker-entrypoint-initdb.d/workflowdump.sql
       - ./volume/backend-db:/var/lib/postgresql/data/
     networks:
       - baas_network
@@ -107,3 +126,17 @@ services:
 networks:
   baas_network:
     driver: bridge
+
+volumes:
+  directus_uploads:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./volume/backend/uploads/
+  directus_extensions:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./volume/backend/extensions/

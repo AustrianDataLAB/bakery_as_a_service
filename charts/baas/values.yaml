@@ -1,8 +1,53 @@
 
+# From rancher app form
+customFqdn: "from.rancher.app.questions"
+customName: "from.rancher.app.questions"
+customEmail: "from.rancher.app.questions"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: "bakery-as-a-service"
+
+frontend:
+  name: baas-frontend
+  replicaCount: 1
+  service:
+    name: service-baas-frontend
+    port: 80
+    type: ClusterIP
+  image:
+    repository: ghcr.io/austriandatalab/baas-frontend
+    tag: main
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: "500m"
+      memory: 512Mi
+    requests:
+      cpu: "50m"
+      memory: 64Mi
+  restartPolicy: Always
+  terminationGracePeriodSeconds: 30
+  ingress:
+    name: baas-frontend-ingress
+    enabled: true
+    className: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
+    hosts:
+      - host: baas.caas-0024.dev.austrianopencloudcommunity.org
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+        backend:
+          service:
+            name: service-baas-frontend
+            port:
+              number: 8055
+    tls:
+      - hosts:
+          - baas.caas-0024.dev.austrianopencloudcommunity.org
+        secretName: tls-baas-frontend-ingress
 
 directus:
   name: baas-backend
@@ -31,6 +76,47 @@ directus:
     password: "admin"
   client: "pg"
   websockets: true
+  ingress:
+    name: baas-admin-ingress
+    enabled: true
+    className: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
+    hosts:
+      - host: baas-admin.caas-0024.dev.austrianopencloudcommunity.org
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+        backend:
+          service:
+            name: service-baas-backend
+            port:
+              number: 8055
+    tls:
+      - hosts:
+          - baas-admin.caas-0024.dev.austrianopencloudcommunity.org
+        secretName: tls-baas-admin-ingress
+
+document:
+  name: baas-document
+  replicaCount: 1
+  service:
+    name: service-baas-document
+    port: 80
+    type: ClusterIP
+  image:
+    repository: ghcr.io/austriandatalab/baas-document
+    tag: main
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: "500m"
+      memory: 512Mi
+    requests:
+      cpu: "50m"
+      memory: 64Mi
+  restartPolicy: Always
+  terminationGracePeriodSeconds: 30
 
 postgres:
   service:
@@ -67,23 +153,13 @@ postgres:
       mount: /var/lib/postgresql/
       claim: baas-backend-db
 
-ingress:
-  name: baas-admin-ingress
-  enabled: true
-  className: "nginx"
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
-  hosts:
-    - host: baas-admin.caas-0024.dev.austrianopencloudcommunity.org
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-      backend:
-        service:
-          name: service-baas-backend
-          port:
-            number: 8055
-  tls:
-    - hosts:
-        - baas-admin.caas-0024.dev.austrianopencloudcommunity.org
-      secretName: tls-baas-admin-ingress
+valkey:
+  enable: true
+
+  # no replicas for simplicity
+  architecture: standalone
+
+  # use password from existing secret
+  auth:
+    enabled: true
+    password: "replace-with-random-value"

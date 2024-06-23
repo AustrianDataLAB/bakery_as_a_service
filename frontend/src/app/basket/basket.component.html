@@ -1,19 +1,62 @@
-<ul class="navbar">
-  <li><a [routerLink]="['/shop']">Shop</a></li>
-  <li><a [routerLink]="['/cart']">Cart</a></li>
-</ul>
-
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Price</th>
-    </tr>
-    @for(product of products; track product) {
-    <tr>
-        <td>{{product.name}}</td>
-        <td>{{product.price}} EUR</td> 
-    </tr>
-    }
-</table>
-
-<button (click)="checkout()">Checkout</button>
+@if (!products || products.length == 0) {
+    <div class="container col-md-9 col-sm-12 d-flex flex-column justify-content-center align-items-center h-100">
+        <div class="mb-4">
+            <h2 class="text-center">Your basket is empty ¯\_(ツ)_/¯</h2>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-primary btn-lg" [routerLink]="['/products']">Go to products</button>
+        </div>
+    </div>
+}
+@else {
+    <div class="container col-md-9 col-sm-12">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Name</th>
+                    <th class="text-center" scope="col">Quantity</th>
+                    <th class="text-end" scope="col">Price</th>
+                </tr>
+            </thead>
+        
+            <tbody>
+                @for(p of products; track p) {
+                    <tr>
+                        <td>
+                            <a [routerLink]="['/product', p.product.id]">
+                                <img src="{{apiUrl}}/assets/{{p.product.image}}" class="product-image"/>
+                            </a>
+                        </td>
+                        <td>{{p.product.name}}</td>
+                        <td id="quantity-col">
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary" type="button" (click)="decrementQuantity(p)">-</button>
+                                <input type="number" class="form-control" [(ngModel)]="p.quantity" (change)="setQuantity(p, p.quantity)" min="1">
+                                <button class="btn btn-outline-secondary" type="button" (click)="incrementQuantity(p)">+</button>
+                            </div>
+                        </td>
+                        <td class="text-end">{{price(p)}} €</td>
+                        <td class="text-center">
+                            <button class="btn btn-danger" (click)="remove(p)" title="Remove from basket">
+                                <i class="bi bi-cart-dash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-right">Total Price:</td>
+                    <td class="text-end"><b>{{totalSum}} €</b></td>
+                    <td class="text-center">
+                        <button class="btn btn-success btn-lg" (click)="checkout()">
+                            <i class="bi bi-cart-check"></i>
+                            Checkout
+                        </button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>    
+}

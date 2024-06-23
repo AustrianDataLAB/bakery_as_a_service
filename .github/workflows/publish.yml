@@ -9,10 +9,16 @@ on:
       - 'v*'
 
 env:
-  REGISTRY: ghcr.io
-  REPOSITORY_NAME: austriandatalab
+  # build on tags/main and pull_requests
+  # the GCP repository is only exposed for protected branches, i.e. main
+  PUSH_IMAGES: ${{ startsWith(github.event.ref, 'refs/tags/v') || startsWith(github.event.ref, 'refs/heads/main') }}
+  REGISTRY: ${{ vars.USE_GCP && vars.GCP_REGISTRY || 'ghcr.io' }}
+  REPOSITORY_NAME: ${{ vars.USE_GCP && vars.GCP_REPOSITORY_NAME || 'austriandatalab' }}
+  REGISTRY_USER: ${{ vars.USE_GCP && vars.GCP_REGISTRY_USER || github.actor }}
+  REGISTRY_PASSWORD: ${{ vars.USE_GCP && secrets.GOOGLE_REGISTRY_PUSH_CREDENTIALS || secrets.GITHUB_TOKEN }}
   IMAGE_NAME_BACKEND: baas-backend
   IMAGE_NAME_FRONTEND: baas-frontend
+  IMAGE_NAME_DOCUMENT: baas-document
 
 jobs:
   backend-build-and-push:
@@ -29,8 +35,8 @@ jobs:
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v4
@@ -39,7 +45,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: backend
-          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+          push: ${{ env.PUSH_IMAGES }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_BACKEND }}:latest
@@ -76,8 +82,8 @@ jobs:
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v4
@@ -86,7 +92,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: frontend
-          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+          push: ${{ env.PUSH_IMAGES }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_FRONTEND }}:latest
@@ -97,6 +103,53 @@ jobs:
         continue-on-error: true
         with:
           image-ref: '${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }}'
+          ignore-unfixed: true
+          exit-code: '1'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        continue-on-error: true
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  document-build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4
+
+      - name: Build and push the document image to ghcr.io
+        uses: docker/build-push-action@v5
+        with:
+          context: document-service
+          push: ${{ env.PUSH_IMAGES }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_DOCUMENT }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_DOCUMENT }}:latest
+            ${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_DOCUMENT }}:${{ env.GITHUB_REF_NAME }}
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        continue-on-error: true
+        with:
+          image-ref: '${{ env.REGISTRY }}/${{ env.REPOSITORY_NAME }}/${{ env.IMAGE_NAME_DOCUMENT }}:${{ github.sha }}'
           ignore-unfixed: true
           exit-code: '1'
           format: 'sarif'
@@ -123,7 +176,7 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v4.2.0
         with:
-          version: v3.14.4
+          version: v3.15.1
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v4
@@ -131,5 +184,5 @@ jobs:
       - name: Push helm chart to registry
         run: .github/workflows/push_helm.sh
         env:
-          REGISTRY_USERNAME: ${{ github.actor }}
-          REGISTRY_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_USERNAME: ${{ env.REGISTRY_USER }}
+          REGISTRY_ACCESS_TOKEN: ${{ env.REGISTRY_PASSWORD }}

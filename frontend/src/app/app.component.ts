@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { BackendService } from './backend.service';
+import { OnInit } from '@angular/core';
+import { BasketService } from './basket.service';
+
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +13,26 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  constructor() {
+export class AppComponent implements OnInit {
+
+  isLoggedIn: boolean = false;
+  productsInBasket: number = 0;
+  apiUrl = environment.API_URL;
+  appName = environment.APP_NAME;
+
+  constructor(private backendService: BackendService, private basketService: BasketService) { }
+
+  ngOnInit() {
+    this.backendService.loggedIn.subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
+    });
+
+    this.basketService.basketItems$.subscribe((items) => {
+      this.productsInBasket = items.length;
+    });
+  }
+
+  logout() {
+    this.backendService.logout();
   }
 }

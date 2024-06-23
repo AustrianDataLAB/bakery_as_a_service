@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { createDirectus, rest, authentication, readItems, readItem, createItem, createItems } from '@directus/sdk';
+import { BehaviorSubject } from 'rxjs';
+
+import { environment } from '../environments/environment';
 
 export interface Product {
   id: string;
   name: string;
   description: string;
   price: number;
+  image: string;
 }
 
 export interface Order {
@@ -34,9 +38,15 @@ interface Schema {
   providedIn: 'root'
 })
 export class BackendService {
-  client = createDirectus<Schema>('http://localhost:8055') //TODO: read from env
+  client = createDirectus<Schema>(environment.API_URL) //TODO: read from env
     .with(rest())
     .with(authentication());
+
+  public loggedIn = new BehaviorSubject<boolean>(this.checkIfLoggedIn());
+
+  get isLoggedIn() {
+    return this.loggedIn.asObservable();
+  }
 
   constructor() { }
 
@@ -68,14 +78,31 @@ export class BackendService {
 
   async login(email: string, password: string) {
     const response = await this.client.login(email, password);
-
+    
     localStorage.setItem('user', JSON.stringify(response));
-
+    
+    this.loggedIn.next(true);
+    
     return response;
   }
 
   async logout() {
     this.client.logout();
+    localStorage.removeItem('user');
+    this.loggedIn.next(false);
+  }
+
+  checkIfLoggedIn(): boolean {
+    const auth = localStorage.getItem('user');
+    if (auth != null) {
+      const token = JSON.parse(auth)['access_token'];
+      const decodedToken = this.parseJwt(token);
+      const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+      if (decodedToken.exp > currentTime) {
+        return true; // Token is not expired
+      }
+    }
+    return false; // No token or token is expired
   }
 
   async createOrder(order: Order): Promise<Order> {
