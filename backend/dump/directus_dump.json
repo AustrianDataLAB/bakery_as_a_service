@@ -922,7 +922,7 @@
         "display": null,
         "display_options": null,
         "readonly": true,
-        "hidden": true,
+        "hidden": false,
         "sort": 1,
         "width": "full",
         "translations": null,
@@ -1423,7 +1423,7 @@
   "operations": [
     {
       "id": "0133fe8d-07c9-4053-a3f4-d4bffb3ee65e",
-      "name": "Run Script",
+      "name": "Run Create JSON Payload",
       "key": "exec_iyaqu",
       "type": "exec",
       "position_x": 19,
@@ -1531,7 +1531,7 @@
     },
     {
       "id": "661c2ef9-2cff-4c24-b5eb-188529fb31a6",
-      "name": "Read Data",
+      "name": "Read Products",
       "key": "item_read_s0wyq",
       "type": "item-read",
       "position_x": 19,
@@ -1587,7 +1587,7 @@
     },
     {
       "id": "8480a4c0-9331-4fff-bc8e-cfb45c90378f",
-      "name": "Run Script",
+      "name": "Run Extract Product IDs",
       "key": "exec_llag8",
       "type": "exec",
       "position_x": 1,
@@ -1662,7 +1662,7 @@
     },
     {
       "id": "aec8d9ec-3981-4670-ac41-162af3698a8a",
-      "name": "Run Script",
+      "name": "Run Get Customer",
       "key": "exec_qarqg",
       "type": "exec",
       "position_x": 37,
@@ -1678,7 +1678,7 @@
     },
     {
       "id": "c20639ab-7442-46bc-bdf2-f9a28e6ab60e",
-      "name": "Read Data",
+      "name": "Get Order",
       "key": "read_order",
       "type": "item-read",
       "position_x": 19,
@@ -1702,7 +1702,7 @@
     },
     {
       "id": "c2432aaf-6db2-4db1-99f0-76f0181f5ce6",
-      "name": "Read Data",
+      "name": "Read Order Items",
       "key": "item_read_buebu",
       "type": "item-read",
       "position_x": 37,
@@ -1742,7 +1742,7 @@
     },
     {
       "id": "f87cb624-cbe4-4391-8333-9bf3af5a0906",
-      "name": "Read Data",
+      "name": "Read Customer",
       "key": "item_read_v7iz9",
       "type": "item-read",
       "position_x": 1,
