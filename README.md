@@ -10,6 +10,15 @@ application including web shop + planning software for goods and delivery.
 * `docker-compose up`
 * Open `http://localhost:8055/` locally and login with `admin@example.com` + `admin`
 
+## How to upgrade helm chart
+
+* `git checkout gh-pages`
+* `git merge main`
+* `cd docs` 
+* `helm package ../charts/baas`
+* `helm repo index .`
+* commit and push
+
 ## Components Overview
 
 Our application will consist of four main components: the customer app, the management interface, the document service and the planning service.
