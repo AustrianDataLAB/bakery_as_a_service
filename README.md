@@ -5,19 +5,32 @@ order to run smoothly. I sat done with a medium sized bakery in my
 town in order to identify some requirements for such an
 application including web shop + planning software for goods and delivery.
 
-## Local Development Setup
+## Dev Howtos
+
+### How to deploy locally
 
 * `docker-compose up`
 * Open `http://localhost:8055/` locally and login with `admin@example.com` + `admin`
 
-## How to upgrade helm chart
+### How to access develop build
 
-* `git checkout gh-pages`
-* `git merge main`
+* Push/merge to main (Rancher CI/CD will autom. sync/apply the changes)
+* Open `https://baas-admin.caas-0024.dev.austrianopencloudcommunity.org` + `https://baas.caas-0024.dev.austrianopencloudcommunity.org` and login with `admin@example.com` + `admin`
+
+### How to deploy new helm chart version
+
 * `cd docs` 
 * `helm package ../charts/baas`
 * `helm repo index .`
-* commit and push
+* Commit and push artifacts, then see new version available in Rancher.
+
+### How to create new customer instance (tenant)
+
+* Go to rancher apps and search for `baas`
+* Install a new `baas` app in a NEW namespace `baas-xyz` and same name.
+* Fill the form vars (subdomain etc.) and click Install.
+* Open `https://CUSTOM-admin.caas-0024.dev.austrianopencloudcommunity.org` + `https://CUSTOM.caas-0024.dev.austrianopencloudcommunity.org` and login with custom credentials.
+
 
 ## Components Overview
 
