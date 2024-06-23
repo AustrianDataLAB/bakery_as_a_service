@@ -9,11 +9,9 @@ fullnameOverride: "bakery-as-a-service"
 directus:
   key: "replace-with-random-value"
   secret: "replace-with-random-value"
-  admin:
-    email: "admin@example.com"
-    password: "admin"
 
 # From rancher app form
 customSubdomain: "baas"
 customName: "BaaS Demo"
-customEmail: "baas@example.com"
+customEmail: "admin@example.com"
+customPassword: "admin"

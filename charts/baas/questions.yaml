@@ -14,6 +14,12 @@ questions:
 
 - variable: customEmail
   default: "name@example.com"
-  description: Customer E-Mail for demo account creation
+  description: Customer E-Mail for admin access
   type: string
   label: Customer E-Mail
+
+- variable: customPassword
+  default: "admin"
+  description: Customer Password for admin access
+  type: password
+  label: Customer Password

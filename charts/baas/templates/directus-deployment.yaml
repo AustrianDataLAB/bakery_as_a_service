@@ -26,9 +26,9 @@ spec:
         - name: SECRET
           value: "{{ .Values.directus.secret }}"
         - name: ADMIN_EMAIL
-          value: "{{ .Values.directus.admin.email }}"
+          value: "{{ .Values.customEmail }}"
         - name: ADMIN_PASSWORD
-          value: "{{ .Values.directus.admin.password }}"
+          value: "{{ .Values.customPassword }}"
         - name: DB_CLIENT
           value: "pg"
         - name: DB_HOST
