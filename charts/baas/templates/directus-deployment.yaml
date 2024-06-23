@@ -84,7 +84,7 @@ spec:
           - "/bin/sh"
         args: [ "-c", "cd /opt/dump_restore && python3 restore.py"]
 
-      restartPolicy: Never
+      restartPolicy: Always
       terminationGracePeriodSeconds: 30
       #volumes:
       #- name: baas-backend
