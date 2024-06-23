@@ -1,0 +1,19 @@
+questions:
+
+- variable: customName
+  default: "My Bakery"
+  description: Name of the customer instance
+  type: string
+  label: Instance Name
+
+- variable: customSubdomain
+  default: "custom"
+  description: Customers desired FQDN to access BaaS UI
+  type: string
+  label: Customer Subdomain
+
+- variable: customEmail
+  default: "name@example.com"
+  description: Customer E-Mail for demo account creation
+  type: string
+  label: Customer E-Mail
