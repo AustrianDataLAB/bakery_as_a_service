@@ -69,14 +69,14 @@ spec:
           requests:
             cpu: "50m"
             memory: 64Mi
-        volumeMounts:
-        - mountPath: /directus/
-          name: baas-backend-data
+        # volumeMounts:
+        # - mountPath: /directus/
+        #   name: baas-backend-data
 
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
 
-      volumes:
-      - name: baas-backend-data
-        persistentVolumeClaim:
-          claimName: baas-backend-data
+      # volumes:
+      # - name: baas-backend-data
+      #   persistentVolumeClaim:
+      #     claimName: baas-backend-data
