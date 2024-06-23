@@ -2,7 +2,7 @@
 # Main chart config
 clusterDomain: "caas-0024.dev.austrianopencloudcommunity.org"
 
-imageTag: "main"
+imageTag: "latest"
 
 nameOverride: ""
 fullnameOverride: "bakery-as-a-service"
