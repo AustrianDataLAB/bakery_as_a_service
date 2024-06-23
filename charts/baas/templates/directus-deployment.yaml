@@ -18,7 +18,7 @@ spec:
       containers:
       - env:
         - name: CUSTOM_FQDN
-          value: "{{ .Values.customFqdn }}"
+          value: "{{ .Values.customSubdomain }}.{{ .Values.clusterDomain }}"
         - name: CUSTOM_NAME
           value: "{{ .Values.customName }}"
         - name: CUSTOM_EMAIL

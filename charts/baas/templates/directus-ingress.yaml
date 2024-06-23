@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "baas-admin.caas-0024.dev.austrianopencloudcommunity.org"
+    - host: "{{ .Values.customSubdomain }}-admin.{{ .Values.clusterDomain }}"
       http:
         paths:
           - path: /
@@ -22,5 +22,5 @@ spec:
                   number: 8055
   tls:
     - hosts:
-        - "baas-admin.caas-0024.dev.austrianopencloudcommunity.org"
+        - "{{ .Values.customSubdomain }}-admin.{{ .Values.clusterDomain }}"
       secretName: tls-baas-admin-ingress

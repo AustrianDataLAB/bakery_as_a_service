@@ -1,8 +1,6 @@
 
-# From rancher app form
-customFqdn: "from.rancher.app.questions"
-customName: "from.rancher.app.questions"
-customEmail: "from.rancher.app.questions"
+# Main chart config
+clusterDomain: "caas-0024.dev.austrianopencloudcommunity.org"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -15,3 +13,7 @@ directus:
     email: "admin@example.com"
     password: "admin"
 
+# From rancher app form
+customSubdomain: "from.rancher.app.questions"
+customName: "from.rancher.app.questions"
+customEmail: "from.rancher.app.questions"

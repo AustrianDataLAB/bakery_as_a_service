@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "baas.caas-0024.dev.austrianopencloudcommunity.org"
+    - host: "{{ .Values.customSubdomain }}.{{ .Values.clusterDomain }}"
       http:
         paths:
           - path: /
@@ -22,5 +22,5 @@ spec:
                   number: 8055
   tls:
     - hosts:
-        - "baas.caas-0024.dev.austrianopencloudcommunity.org"
+        - "{{ .Values.customSubdomain }}.{{ .Values.clusterDomain }}"
       secretName: tls-baas-frontend-ingress
