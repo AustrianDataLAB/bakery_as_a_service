@@ -1471,7 +1471,7 @@
       "options": {
         "body": "{{exec_iyaqu}}",
         "method": "POST",
-        "url": "http://document-service:80/generate/invoice"
+        "url": "{{document_service_url}}/generate/invoice"
       },
       "resolve": "98c801b1-14b8-45c5-a2dd-c483ad130b27",
       "reject": null,
@@ -1672,7 +1672,7 @@
       "position_y": 37,
       "options": {
         "method": "POST",
-        "url": "http://document-service:80/generate/list",
+        "url": "{{document_service_url}}/generate/list",
         "body": "{{exec_pew0v}}"
       },
       "resolve": "29bd7b3a-7ade-483d-8a6a-94e37da342f8",

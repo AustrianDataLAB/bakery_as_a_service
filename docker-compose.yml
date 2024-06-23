@@ -95,6 +95,7 @@ services:
     environment:
       <<: *backend-variables
       BASE_URL: "http://backend:8055"
+      FLOW_SERVICE_URL: '{"document_service_url":"http://document-service:80"}'
     restart: "no"
     entrypoint: [ "sh", "-c", "cd /opt/dump_restore && python3 restore.py"]
     depends_on:
