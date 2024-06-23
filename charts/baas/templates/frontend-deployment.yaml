@@ -34,13 +34,13 @@ spec:
           requests:
             cpu: "50m"
             memory: 64Mi
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      volumeMounts:
+        volumeMounts:
         - name: frontend-config-js
           mountPath: /usr/share/nginx/html/config.js
           subPath: config.js
-    volumes:
-    - name: frontend-config-js
-      configMap:
-        name: frontend-customer-config
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: frontend-config-js
+        configMap:
+          name: frontend-customer-config
