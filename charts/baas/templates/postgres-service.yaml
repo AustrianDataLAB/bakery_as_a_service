@@ -10,4 +10,4 @@ spec:
       protocol: TCP
       name: db-port
   selector:
-    servicename: service-baas-backend-db # Select member-pods of this service
+    servicename: baas-backend-db # Select member-pods of this service

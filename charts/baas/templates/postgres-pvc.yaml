@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: service-baas-backend-db
+  name: baas-backend-db
 spec:
   accessModes:
     - ReadWriteOnce

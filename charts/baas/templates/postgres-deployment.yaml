@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: service-baas-backend-db
+  name: baas-backend-db
 spec:
   progressDeadlineSeconds: 60
   replicas: 1
   selector:
     matchLabels:
-      servicename: service-baas-backend-db
+      servicename: baas-backend-db
   template:
     metadata:
       labels:
-        servicename: service-baas-backend-db
+        servicename: baas-backend-db
     spec:
       containers:
       - env:
