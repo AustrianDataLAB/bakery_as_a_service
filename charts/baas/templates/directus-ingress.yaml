@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "baas.labels" . | nindent 4 }}
   annotations:
-    - cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
+    cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
   name: baas-admin-ingress
 spec:
   ingressClassName: nginx
