@@ -17,6 +17,12 @@ spec:
     spec:
       containers:
       - env:
+        - name: CUSTOM_FQDN
+          value: "{{ .Values.customFqdn }}"
+        - name: CUSTOM_NAME
+          value: "{{ .Values.customName }}"
+        - name: CUSTOM_EMAIL
+          value: "{{ .Values.customEmail }}"
         - name: KEY
           value: "{{ .Values.directus.key }}"
         - name: SECRET
@@ -39,6 +45,16 @@ spec:
           value: "{{ .Values.postgres.user.password }}"
         - name: WEBSOCKETS_ENABLED
           value: "{{ .Values.directus.websockets }}"
+        {{- if .Values.valkey.enable }}
+        - name: REDIS_ENABLED
+          value: "1"
+        - name: REDIS_HOST
+          value: "valkey-master.default.svc.cluster.local"
+        - name: REDIS_PORT
+          value: "{{ .Values.valkey.master.containerPorts.valkey }}"
+        - name: REDIS_PASSWORD
+          value: "{{ .Values.valkey.auth.password }}"
+        {{- end }}
         name: {{ .Values.directus.name }}
         image: {{ .Values.directus.image.repository }}:{{ .Values.directus.image.tag }}
         imagePullPolicy: {{ .Values.directus.image.pullPolicy }}

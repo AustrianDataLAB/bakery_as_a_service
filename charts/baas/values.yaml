@@ -1,4 +1,8 @@
 
+# From rancher app form
+customFqdn: "from.rancher.app.questions"
+customName: "from.rancher.app.questions"
+customEmail: "from.rancher.app.questions"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -149,3 +153,13 @@ postgres:
       mount: /var/lib/postgresql/
       claim: baas-backend-db
 
+valkey:
+  enable: true
+
+  # no replicas for simplicity
+  architecture: standalone
+
+  # use password from existing secret
+  auth:
+    enabled: true
+    password: "replace-with-random-value"
