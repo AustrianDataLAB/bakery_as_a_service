@@ -14,7 +14,10 @@ spec:
         servicename: baas-backend
     spec:
       containers:
-      - env:
+      - name: baas-backend
+        image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
+        imagePullPolicy: IfNotPresent
+        env:
         - name: CUSTOM_NAME
           value: "{{ .Values.customName }}"
         - name: CUSTOM_EMAIL
@@ -49,9 +52,6 @@ spec:
           value: "6379"
         - name: REDIS_PASSWORD
           value: "replace-with-random-value"
-        name: baas-backend
-        image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
-        imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -69,10 +69,22 @@ spec:
           requests:
             cpu: "50m"
             memory: 64Mi
-        #volumeMounts:
-        #- mountPath: /pv
-        #  name: baas-backend
-      restartPolicy: Always
+
+      - name: baas-backend-init-demo
+        image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ADMIN_EMAIL
+          value: "{{ .Values.customEmail }}"
+        - name: ADMIN_PASSWORD
+          value: "{{ .Values.customPassword }}"
+        - name: BASE_URL
+          value: "http://baas-backend:8055"
+        command: 
+          - "/bin/sh"
+        args: [ "-c", "cd /opt/dump_restore && python3 restore.py"]
+
+      restartPolicy: Never
       terminationGracePeriodSeconds: 30
       #volumes:
       #- name: baas-backend
