@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: baas-backend-init-demo
+  name: baas-backend-init-demo-{{- now | unixEpoch}}
 spec:
   template:
     spec:
