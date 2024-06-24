@@ -1,29 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.frontend.name }}
+  name: baas-frontend
 spec:
   progressDeadlineSeconds: 60
-  replicas: {{ .Values.frontend.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      servicename: {{ .Values.frontend.name }}
-  strategy:
-    type: Recreate
+      servicename: baas-frontend
   template:
     metadata:
       labels:
-        servicename: {{ .Values.frontend.name }}
+        servicename: baas-frontend
     spec:
       containers:
-      - name: {{ .Values.frontend.name }}
-        image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
-        imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+      - name: baas-frontend
+        image: ghcr.io/austriandatalab/baas-frontend:{{ .Values.imageTag }}
+        imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /
-            port: {{ .Values.frontend.service.port }}
+            port: 80
             scheme: HTTP
           initialDelaySeconds: 10
           periodSeconds: 5
@@ -31,17 +29,18 @@ spec:
           timeoutSeconds: 5
         resources:
           limits:
-            cpu: "{{ .Values.frontend.resources.limits.cpu }}"
-            memory: {{ .Values.frontend.resources.limits.memory }}
+            cpu: "500m"
+            memory: 512Mi
           requests:
-            cpu: "{{ .Values.frontend.resources.requests.cpu }}"
-            memory: {{ .Values.frontend.resources.requests.memory }}
-      restartPolicy: {{ .Values.frontend.restartPolicy }}
-      terminationGracePeriodSeconds: {{ .Values.frontend.terminationGracePeriodSeconds }}
-      env:
-        - name: CUSTOM_FQDN
-          value: "{{ .Values.customFqdn }}"
-        - name: CUSTOM_NAME
-          value: "{{ .Values.customName }}"
-        - name: CUSTOM_EMAIL
-          value: "{{ .Values.customEmail }}"
+            cpu: "50m"
+            memory: 64Mi
+        volumeMounts:
+        - name: frontend-config-js
+          mountPath: /usr/share/nginx/html/config.js
+          subPath: config.js
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: frontend-config-js
+        configMap:
+          name: frontend-customer-config

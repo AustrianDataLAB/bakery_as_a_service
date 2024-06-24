@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: baas-backend-init-demo
+spec:
+  template:
+    spec:
+      containers:
+      - name: baas-backend-init-demo
+        image: ghcr.io/austriandatalab/baas-backend:{{ .Values.imageTag }}
+        command: [ "sh", "-c", "cd /opt/dump_restore && python3 restore.py"]
+        env:
+        - name: ADMIN_EMAIL
+          value: "{{ .Values.customEmail }}"
+        - name: ADMIN_PASSWORD
+          value: "{{ .Values.customPassword }}"
+        - name: BASE_URL
+          value: "http://service-baas-backend:8055"
+      restartPolicy: Never
+  backoffLimit: 10
+
