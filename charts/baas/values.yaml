@@ -7,10 +7,6 @@ imageTag: "latest"
 nameOverride: ""
 fullnameOverride: "bakery-as-a-service"
 
-directus:
-  key: "replace-with-random-value"
-  secret: "replace-with-random-value"
-
 # From rancher app form
 customSubdomain: "baas"
 customName: "BaaS Demo"

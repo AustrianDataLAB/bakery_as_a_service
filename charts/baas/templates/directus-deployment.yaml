@@ -23,9 +23,9 @@ spec:
         - name: CUSTOM_EMAIL
           value: "{{ .Values.customEmail }}"
         - name: KEY
-          value: "{{ .Values.directus.key }}"
+          value: {{ include "baas.randString" . }}
         - name: SECRET
-          value: "{{ .Values.directus.secret }}"
+          value: {{ include "baas.randString" . }}
         - name: ADMIN_EMAIL
           value: "{{ .Values.customEmail }}"
         - name: ADMIN_PASSWORD
