@@ -53,7 +53,7 @@ spec:
         - name: REDIS_PASSWORD
           value: "replace-with-random-value"
         livenessProbe:
-          failureThreshold: 3
+          failureThreshold: 10
           httpGet:
             path: /admin
             port: 8055
@@ -65,10 +65,10 @@ spec:
         resources:
           limits:
             cpu: "500m"
-            memory: 512Mi
+            memory: 1Gi
           requests:
             cpu: "50m"
-            memory: 64Mi
+            memory: 256Mi
         # volumeMounts:
         # - mountPath: /directus/
         #   name: baas-backend-data
