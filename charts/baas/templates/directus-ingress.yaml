@@ -19,7 +19,7 @@ spec:
               service:
                 name: service-baas-backend
                 port:
-                  number: 8055
+                  number: 80
   tls:
     - hosts:
         - "{{ .Values.customSubdomain }}-admin.{{ .Values.clusterDomain }}"

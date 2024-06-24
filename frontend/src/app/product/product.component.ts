@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService, Product } from '../backend.service';
 import { BasketService } from '../basket.service';
 import { FormsModule } from '@angular/forms';
 
-import { environment } from '../../environments/environment';
+import {Config, CONFIG_TOKEN} from "../config/config";
 
 @Component({
   selector: 'app-product',
@@ -14,11 +14,12 @@ import { environment } from '../../environments/environment';
   styleUrl: './product.component.scss'
 })
 export class ProductComponent implements OnInit {
-  public apiUrl = environment.API_URL;
+  public apiUrl = this.config.apiUrl;
   product: Product | undefined;
   quantity: number = 1;
 
-  constructor(private route: ActivatedRoute, public backendService: BackendService, public basketService: BasketService, public router: Router) { }
+  constructor(private route: ActivatedRoute, public backendService: BackendService, public basketService: BasketService,
+              public router: Router, @Inject(CONFIG_TOKEN) private readonly config: Config) { }
 
   ngOnInit(): void {
     const productId = this.route.snapshot.paramMap.get('id');
@@ -37,7 +38,7 @@ export class ProductComponent implements OnInit {
     if (this.product) {
       const button = event.target as HTMLElement;
       button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-    
+
       setTimeout(() => {
         button.innerHTML = '<i class="bi bi-cart-plus"></i> Add to cart';
       }, 200);

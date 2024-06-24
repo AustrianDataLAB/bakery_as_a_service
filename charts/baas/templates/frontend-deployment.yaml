@@ -35,12 +35,12 @@ spec:
             cpu: "50m"
             memory: 64Mi
         volumeMounts:
-        - name: frontend-config-js
-          mountPath: /usr/share/nginx/html/config.js
-          subPath: config.js
+        - name: frontend-config-json
+          mountPath: /usr/share/nginx/html/browser/assets/config.json
+          subPath: config.json
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: frontend-config-js
+      - name: frontend-config-json
         configMap:
           name: frontend-customer-config

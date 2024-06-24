@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
-import { BackendService } from './backend.service';
-import { OnInit } from '@angular/core';
-import { BasketService } from './basket.service';
-
-import { environment } from '../environments/environment';
+import {Component, Inject} from '@angular/core';
+import {RouterModule, RouterOutlet} from '@angular/router';
+import {BackendService} from './backend.service';
+import {OnInit} from '@angular/core';
+import {BasketService} from './basket.service';
+import {Config, CONFIG_TOKEN} from "./config/config";
 
 @Component({
   selector: 'app-root',
@@ -17,10 +16,13 @@ export class AppComponent implements OnInit {
 
   isLoggedIn: boolean = false;
   productsInBasket: number = 0;
-  apiUrl = environment.API_URL;
-  appName = environment.APP_NAME;
+  apiUrl: string = this.config.apiUrl;
+  appName: string = this.config.appName;
 
-  constructor(private backendService: BackendService, private basketService: BasketService) { }
+  constructor(private backendService: BackendService, private basketService: BasketService,
+              @Inject(CONFIG_TOKEN) private readonly config: Config
+  ) {
+  }
 
   ngOnInit() {
     this.backendService.loggedIn.subscribe((loggedIn) => {

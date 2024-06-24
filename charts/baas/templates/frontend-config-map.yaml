@@ -3,8 +3,10 @@ kind: ConfigMap
 metadata:
   name: frontend-customer-config
 data: 
-  # Usage in Frontend: Add <script src="/assets/config.js"></script>, then use: window.customerDomain
-  config.js: |
-    customerDomain="//{{ .Values.customSubdomain }}.{{ .Values.clusterDomain }}";
-    customerName="{{ .Values.customName }}";
-    customerEmail="{{ .Values.customEmail }}";
+  # Usage in Frontend: Add <script src="/assets/config.json"></script>, then use: window.customerDomain
+  config.json: |
+    {
+      "apiUrl": "//{{ .Values.customSubdomain }}-admin.{{ .Values.clusterDomain }}",
+      "appName": "{{ .Values.customName }}",
+      "customerEmail": "{{ .Values.customEmail }}"
+    }
