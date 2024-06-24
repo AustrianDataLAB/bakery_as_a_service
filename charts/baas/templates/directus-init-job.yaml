@@ -15,7 +15,7 @@ spec:
         - name: ADMIN_PASSWORD
           value: "{{ .Values.customPassword }}"
         - name: BASE_URL
-          value: "http://service-baas-backend:8055"
+          value: "http://service-baas-backend:80"
       restartPolicy: Never
   backoffLimit: 10
 

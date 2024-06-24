@@ -5,7 +5,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8055 # exposed port reachable by other pods
+    - port: 80 # exposed port reachable by other pods
       targetPort: 8055 # port inside container
       protocol: TCP
       name: http
