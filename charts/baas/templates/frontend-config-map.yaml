@@ -6,7 +6,7 @@ data:
   # Usage in Frontend: Add <script src="/assets/config.json"></script>, then use: window.customerDomain
   config.json: |
     {
-      "apiUrl": "//{{ .Values.customSubdomain }}-admin.{{ .Values.clusterDomain }}",
+      "apiUrl": "https://{{ .Values.customSubdomain }}-admin.{{ .Values.clusterDomain }}",
       "appName": "{{ .Values.customName }}",
       "customerEmail": "{{ .Values.customEmail }}"
     }
