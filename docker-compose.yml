@@ -39,6 +39,7 @@ services:
 
   document:
     container_name: document-service
+    hostname: service-baas-document
     build:
       context: ./document-service
     image: document-service
