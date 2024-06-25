@@ -70,8 +70,8 @@ services:
     ports:
       - 8055:8055
     volumes:
-      - directus_uploads:/directus/uploads/
-      - directus_extensions:/directus/extensions/
+      - ./volume/backend/uploads/:/directus/uploads/
+      - ./volume/backend/extensions/:/directus/extensions/
     environment:
       <<: *backend-variables
     healthcheck:
@@ -95,7 +95,6 @@ services:
     environment:
       <<: *backend-variables
       BASE_URL: "http://backend:8055"
-      FLOW_SERVICE_URL: '{"document_service_url":"http://document-service:80"}'
     restart: "no"
     entrypoint: [ "sh", "-c", "cd /opt/dump_restore && python3 restore.py"]
     depends_on:
@@ -126,18 +125,3 @@ services:
 
 networks:
   baas_network:
-    driver: bridge
-
-volumes:
-  directus_uploads:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./volume/backend/uploads/
-  directus_extensions:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./volume/backend/extensions/
