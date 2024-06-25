@@ -1,29 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.document.name }}
+  name: baas-document
 spec:
   progressDeadlineSeconds: 60
-  replicas: {{ .Values.document.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      servicename: {{ .Values.document.name }}
-  strategy:
-    type: Recreate
+      servicename: baas-document
   template:
     metadata:
       labels:
-        servicename: {{ .Values.document.name }}
+        servicename: baas-document
     spec:
       containers:
-      - name: {{ .Values.document.name }}
-        image: {{ .Values.document.image.repository }}:{{ .Values.document.image.tag }}
-        imagePullPolicy: {{ .Values.document.image.pullPolicy }}
+      - name: baas-document
+        image: ghcr.io/austriandatalab/baas-document:{{ .Values.imageTag }}
+        imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /
-            port: {{ .Values.document.service.port }}
+            port: 80
             scheme: HTTP
           initialDelaySeconds: 10
           periodSeconds: 5
@@ -31,10 +29,10 @@ spec:
           timeoutSeconds: 5
         resources:
           limits:
-            cpu: "{{ .Values.document.resources.limits.cpu }}"
-            memory: {{ .Values.document.resources.limits.memory }}
+            cpu: "500m"
+            memory: 512Mi
           requests:
-            cpu: "{{ .Values.document.resources.requests.cpu }}"
-            memory: {{ .Values.document.resources.requests.memory }}
-      restartPolicy: {{ .Values.document.restartPolicy }}
-      terminationGracePeriodSeconds: {{ .Values.document.terminationGracePeriodSeconds }}
+            cpu: "50m"
+            memory: 64Mi
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

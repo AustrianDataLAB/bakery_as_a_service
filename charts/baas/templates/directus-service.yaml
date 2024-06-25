@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.directus.service.name }}
+  name: service-baas-backend
 spec:
-  type: {{ .Values.directus.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.directus.service.port }} # exposed port reachable by other pods
-      targetPort: {{ .Values.directus.service.port }} # port inside container
+    - port: 80 # exposed port reachable by other pods
+      targetPort: 8055 # port inside container
       protocol: TCP
       name: http
   selector:
-    servicename: {{ .Values.directus.name }} # Select member-pods of this service
+    servicename: baas-backend # Select member-pods of this service

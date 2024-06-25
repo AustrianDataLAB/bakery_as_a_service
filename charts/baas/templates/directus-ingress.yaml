@@ -1,47 +1,26 @@
-{{- if .Values.directus.ingress.enabled -}}
-{{- $fullName := include "baas.fullname" . -}}
-{{- $svcPort := .Values.directus.service.port -}}
-
 # Ingress + TLS (with letsencrypt auto cert creation) to expose the Directus Admin UI
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   labels:
     {{- include "baas.labels" . | nindent 4 }}
-  {{- with .Values.directus.ingress.annotations }}
   annotations:
-      {{- toYaml . | nindent 4 }}
-  {{- end }}
-  name: {{ .Values.directus.ingress.name }}
+    cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
+  name: baas-admin-ingress
 spec:
-  {{- if .Values.directus.ingress.className }}
-  ingressClassName: {{ .Values.directus.ingress.className }}
-  {{- end }}
+  ingressClassName: nginx
   rules:
-    {{- range .Values.directus.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: "{{ .Values.customSubdomain }}-admin.{{ .Values.clusterDomain }}"
       http:
         paths:
-            {{- range .paths }}
-          - path: {{ .path }}
-              {{- if .pathType }}
-            pathType: {{ .pathType }}
-              {{- end }}
+          - path: /
+            pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ $.Values.directus.name }}
+                name: service-baas-backend
                 port:
-                  number: {{ $svcPort }}
-            {{- end }}
-      {{- end }}
-  {{- if .Values.directus.ingress.tls }}
+                  number: 80
   tls:
-    {{- range .Values.directus.ingress.tls }}
     - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
-  {{- end }}
-{{- end }}
+        - "{{ .Values.customSubdomain }}-admin.{{ .Values.clusterDomain }}"
+      secretName: tls-baas-admin-ingress

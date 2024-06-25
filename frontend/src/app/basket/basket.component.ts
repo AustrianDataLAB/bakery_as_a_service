@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import { BasketService, BasketItem } from '../basket.service';
 import { BackendService, Product } from '../backend.service';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { environment } from '../../environments/environment';
+import {Config, CONFIG_TOKEN} from "../config/config";
 
 export interface ProductItem {
   product: Product;
@@ -19,10 +19,11 @@ export interface ProductItem {
   styleUrls: ['./basket.component.scss']
 })
 export class BasketComponent implements OnInit {
-  public apiUrl = environment.API_URL;
+  public apiUrl = this.config.apiUrl;
   public products: ProductItem[] = [];
 
-  constructor(public basketService: BasketService, public backendService: BackendService) {}
+  constructor(public basketService: BasketService, public backendService: BackendService,
+              @Inject(CONFIG_TOKEN) private readonly config: Config) {}
 
   async ngOnInit(): Promise<void> {
     const ids = this.basketService.loadFromLocalStorage();

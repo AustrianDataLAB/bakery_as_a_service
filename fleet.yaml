@@ -29,6 +29,6 @@ helm:
 
   # Custom values that will be passed as values.yaml to the installation
   values:
-    customFqdn: "customer001.caas-0024.dev.austrianopencloudcommunity.org"
+    customSubdomain: "customer001"
     customName: "Awesome Bakery 001"
     customEmail: "awesomebakery001@example.com"

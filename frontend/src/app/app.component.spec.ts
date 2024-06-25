@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideRouter } from '@angular/router';
+import {CONFIG, Config, CONFIG_TOKEN} from "./config/config";
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -9,7 +10,8 @@ describe('AppComponent', () => {
         AppComponent
       ],
       providers: [
-        provideRouter([])
+        provideRouter([]),
+        { provide: CONFIG_TOKEN, useValue: CONFIG }
       ],
     }).compileComponents();
   });

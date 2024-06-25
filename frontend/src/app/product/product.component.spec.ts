@@ -1,7 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ProductComponent } from './product.component';
-import { provideRouter } from '@angular/router';
+import {ProductComponent} from './product.component';
+import {provideRouter} from '@angular/router';
+import {CONFIG, CONFIG_TOKEN} from "../config/config";
 
 describe('ProductComponent', () => {
   let component: ProductComponent;
@@ -10,10 +11,13 @@ describe('ProductComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ProductComponent],
-      providers: [provideRouter([])]
+      providers: [
+        provideRouter([]),
+        {provide: CONFIG_TOKEN, useValue: CONFIG}
+      ]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(ProductComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

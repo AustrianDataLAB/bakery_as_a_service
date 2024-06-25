@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import { createDirectus, rest, authentication, readItems, readItem, createItem, createItems } from '@directus/sdk';
 import { BehaviorSubject } from 'rxjs';
 
-import { environment } from '../environments/environment';
+import {Config, CONFIG_TOKEN} from "./config/config";
 
 export interface Product {
   id: string;
@@ -38,7 +38,7 @@ interface Schema {
   providedIn: 'root'
 })
 export class BackendService {
-  client = createDirectus<Schema>(environment.API_URL) //TODO: read from env
+  client = createDirectus<Schema>(this.config.apiUrl)
     .with(rest())
     .with(authentication());
 
@@ -48,16 +48,16 @@ export class BackendService {
     return this.loggedIn.asObservable();
   }
 
-  constructor() { }
+  constructor(@Inject(CONFIG_TOKEN) private readonly config: Config) { }
 
   setAuth(): boolean {
     const auth = localStorage.getItem('user');
 
     if(auth != null) {
-      const token = JSON.parse(auth)['access_token']; 
+      const token = JSON.parse(auth)['access_token'];
       this.client.setToken(token);
       return true;
-    } 
+    }
 
     return false;
   }
@@ -66,8 +66,8 @@ export class BackendService {
       const auth = localStorage.getItem('user');
 
       if(auth != null) {
-        return this.parseJwt(JSON.parse(auth)['access_token']).id; 
-      } 
+        return this.parseJwt(JSON.parse(auth)['access_token']).id;
+      }
 
       return undefined;
     }
@@ -78,11 +78,11 @@ export class BackendService {
 
   async login(email: string, password: string) {
     const response = await this.client.login(email, password);
-    
+
     localStorage.setItem('user', JSON.stringify(response));
-    
+
     this.loggedIn.next(true);
-    
+
     return response;
   }
 
