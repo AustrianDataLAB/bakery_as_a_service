@@ -88,6 +88,13 @@ for collection in collections:
     output["items"][name] = collection_content
 
 
+# %% Users
+print("== Export Users")
+
+res = check(s.get(url(f"/users/")))
+output["users"] = res["data"]
+
+
 # %% Save dump
 
 print("== Creating File Dump")

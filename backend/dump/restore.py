@@ -7,7 +7,7 @@ import copy
 import base64
 import re
 
-from baas_dump import url, get_session, DUMP_FILE, get_placeholder_urls
+from baas_dump import url, get_session, DUMP_FILE, get_placeholder_urls, ADMIN_USER
 
 s = get_session()
 
@@ -161,6 +161,27 @@ for collection, contents in data["items"].items():
     for c in contents:
         c = h(c)
         res = check(s.post(url(f"/items/{collection}"), json=c))
+
+# %% Restore Items
+print("== Restoring Users")
+for u in data["users"]:
+
+    if u["email"] == ADMIN_USER:
+        print("Skipping Admin")
+        continue
+
+    print("Add", u["first_name"], u["last_name"])
+    email = u["email"].lower()
+
+    at_location = email.find('@')
+    pw = email[:at_location]
+
+    u["password"] = pw
+
+    check(s.post(url("/users/"), json=u))
+
+
+# %%
 
 print("OK")
 
