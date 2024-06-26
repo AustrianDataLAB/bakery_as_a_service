@@ -39,6 +39,7 @@ services:
 
   document:
     container_name: document-service
+    hostname: service-baas-document
     build:
       context: ./document-service
     image: document-service
@@ -50,6 +51,8 @@ services:
       retries: 10
       start_period: 10s
       timeout: 5s
+    networks:
+      - baas_network
 
   frontend-test:
     build:

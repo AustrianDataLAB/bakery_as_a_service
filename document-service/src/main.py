@@ -1,6 +1,7 @@
 from typing import Any
 from os import path
 from functools import cache
+import base64
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, Response, RedirectResponse
@@ -57,7 +58,7 @@ def get_invoice_example():
         Headers and all rows must have the same length.
     """,
 )
-def generate_doc(file: model.DocumentList):
+def generate_doc(file: model.DocumentList, encoding: str="base64"):
 
     try:
         file.verify_document_list()
@@ -74,6 +75,10 @@ def generate_doc(file: model.DocumentList):
     except generation.GenerationException as e:
         raise HTTPException(status_code=500, detail=e.reason + "\n" + e.detail)
 
+    if encoding == "base64":
+        data = str(base64.b64encode(pdf), 'utf8')
+        return Response(content=data, media_type="application/pdf;base64")
+
     return Response(content=pdf, media_type="application/pdf")
 
 @app.post(
@@ -84,7 +89,7 @@ def generate_doc(file: model.DocumentList):
         The logo must be base64 encoded and either png or jpeg
     """,
 )
-def generate_invoice(file: model.DocumentInvoice):
+def generate_invoice(file: model.DocumentInvoice, encoding: str="base64"):
     try:
         pdf = generation.generate_document(
             get_template("document_invoice"), {"data": file.model_dump_json()}
@@ -92,4 +97,8 @@ def generate_invoice(file: model.DocumentInvoice):
     except generation.GenerationException as e:
         raise HTTPException(status_code=500, detail=e.reason + "\n" + e.detail)
     
+    if encoding == "base64":
+        data = str(base64.b64encode(pdf), 'utf8')
+        return Response(content=data, media_type="application/pdf;base64")
+
     return Response(content=pdf, media_type="application/pdf")
