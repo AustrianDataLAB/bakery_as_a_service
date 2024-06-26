@@ -2464,7 +2464,7 @@
       "id": "f665a758-29c1-40f3-8cbd-7662d66fb5de",
       "first_name": "Max",
       "last_name": "Customer",
-      "email": "max@example.com",
+      "email": "customer@example.com",
       "password": "**********",
       "location": null,
       "title": null,

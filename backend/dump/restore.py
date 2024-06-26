@@ -164,6 +164,11 @@ for collection, contents in data["items"].items():
 
 # %% Restore Items
 print("== Restoring Users")
+
+# getting admin role for demo purposes
+r = check(s.get(url(f"/roles/")))
+role = r.json()["data"][0]["id"]
+
 for u in data["users"]:
 
     if u["email"] == ADMIN_USER:
@@ -171,12 +176,15 @@ for u in data["users"]:
         continue
 
     print("Add", u["first_name"], u["last_name"])
-    email = u["email"].lower()
+    
+    # no password -> demo / set admin role
+    if u["password"] == '**********':
+        email = u["email"].lower()
+        at_location = email.find('@')
+        pw = email[:at_location]
 
-    at_location = email.find('@')
-    pw = email[:at_location]
-
-    u["password"] = pw
+        u["password"] = pw
+        u["role"] = role
 
     check(s.post(url("/users/"), json=u))
 
