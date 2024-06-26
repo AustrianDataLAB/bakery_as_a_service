@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import { createDirectus, rest, authentication, readItems, readItem, createItem, createItems } from '@directus/sdk';
+import { createDirectus, rest, authentication, readItems, readItem, createItem, createItems, updateItem } from '@directus/sdk';
 import { BehaviorSubject } from 'rxjs';
 
 import {Config, CONFIG_TOKEN} from "./config/config";
@@ -32,6 +32,12 @@ interface Schema {
   Products: Product[];
   Orders: Order[];
   Order_Items: OrderItem[];
+  Invoices: Invoice[];
+}
+
+export interface Invoice {
+  id: number | undefined;
+  document: string;
 }
 
 @Injectable({
@@ -107,7 +113,20 @@ export class BackendService {
 
   async createOrder(order: Order): Promise<Order> {
     this.setAuth();
-    return this.client.request(createItem( "Orders", order ));
+    const createdOrder = await this.client.request(createItem( "Orders", order ));
+    return createdOrder;
+  }
+
+  async updateOrder(order: Order): Promise<Order> {
+    this.setAuth();
+    const updatedOrder = await this.client.request(updateItem("Orders", "" + order.id, order));
+    return updatedOrder;
+  }
+
+  async getInvoice(orderId: string): Promise<Invoice> {
+    this.setAuth();
+    const invoice = await this.client.request(readItem("Invoices", orderId));
+    return invoice;
   }
 
   async createOrderItems(orders: OrderItem[]): Promise<OrderItem[]> {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BackendService, Order, OrderItem, Product } from './backend.service';
 import { ProductItem } from './basket/basket.component';
 import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 export interface BasketItem {
   id: string;
@@ -15,7 +16,7 @@ export class BasketService {
   private basketItemsSource = new BehaviorSubject<BasketItem[]>(this.loadFromLocalStorage());
   public basketItems$ = this.basketItemsSource.asObservable();
 
-  constructor(public backendService: BackendService) {
+  constructor(public backendService: BackendService, private router: Router) {
     this.basketItemsSource.next(this.loadFromLocalStorage());
   }
 
@@ -53,7 +54,7 @@ export class BasketService {
     }
   }
 
-  async order(customer_id: string, products: ProductItem[]): Promise<void> {
+  async order(customer_id: string, products: ProductItem[]): Promise<Order> {
     var items: any[] = [];
 
     products.forEach((x) => {
@@ -69,7 +70,7 @@ export class BasketService {
     const order: Order = {
       id: undefined,
       customer_id: customer_id,
-      status: "ordered",
+      status: "pending",
       total_price: products.reduce((sum, current) => sum + parseFloat(current.product.price + "") * current.quantity, 0),
       date_created: undefined,
     };
@@ -81,6 +82,16 @@ export class BasketService {
     })).then((_items) => {
       this.clearAll();
     });
+
+    order_2.status = "ordered";
+
+    console.log(order_2);
+
+    const updated_order = this.backendService.updateOrder(order_2);
+
+    this.router.navigate([`/invoice/${order_2.id}`]);
+
+    return updated_order;
   }
 
   clearAll(): void {
