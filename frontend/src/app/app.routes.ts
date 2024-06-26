@@ -6,6 +6,7 @@ import { BackendService } from './backend.service';
 import { inject } from '@angular/core';
 import { ProductComponent } from './product/product.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { InvoiceComponent } from './invoice/invoice.component';
 
 export const canActivate: CanActivateFn = () => {
     const backendService = inject(BackendService);
@@ -24,5 +25,6 @@ export const routes: Routes = [
     { path: 'products', component: ProductsComponent, canActivate: [canActivate] },
     { path: 'product/:id', component: ProductComponent, canActivate: [canActivate] },
     { path: 'cart', component: BasketComponent, canActivate: [canActivate] },
+    { path: 'invoice/:id', component: InvoiceComponent, canActivate: [canActivate] },
     { path: '**', component: PageNotFoundComponent }
 ];
