@@ -36,7 +36,7 @@ spec:
             memory: 64Mi
         volumeMounts:
         - name: frontend-config-json
-          mountPath: /usr/share/nginx/html/browser/assets/config.json
+          mountPath: /usr/share/nginx/html/assets/config.json
           subPath: config.json
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
